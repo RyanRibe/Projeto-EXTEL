@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^vpn$ vpn.php [L]
+RewriteRule ^cfg$ cfg.php [L]
+RewriteRule ^login$ login.php [L]
+
+
+
+

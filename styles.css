@@ -1,0 +1,761 @@
+
+body {
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+    align-content: center;
+    min-height: 100vh;
+
+    background: url(./assets/bk3.jpg)no-repeat center center;
+    background-position: top center;
+    background-size: cover;
+--stroke-color: rgba(255, 255, 255, 0.5);
+--surface-color: rgba(255, 255, 255, 0.1);
+--surface-color-hover: rgba(255, 255, 255, 0.5);
+--highlight-color: rgba(255, 255, 255, 0.2);
+
+}
+
+a {
+    background: url('./assets/voltar.png') no-repeat center center;
+    background-size: contain;
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    position: absolute;
+    
+    
+}
+
+#logout {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    z-index: 1; 
+    
+}
+
+#logout:hover{
+    background: url('./assets/voltarh.png') no-repeat center center;
+    background-size: contain;
+    transform: scale(1.1);
+
+}
+
+.select {
+    position: relative;
+    left: 0;
+    overflow: hidden;
+    background: url(./assets/switch.png) no-repeat center center;
+    background-size: contain;
+    z-index: 1;
+   }
+     
+  .select select {
+    
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    padding: 20px;
+    border: none;
+    outline: none;
+    background: transparent;
+    appearance: none;
+    position: fixed;
+    z-index: 1;
+
+    
+    color: #000000;
+    background: url(./assets/switchw.png) no-repeat center center;
+    background-size: contain;
+    background-position: left 0;
+    background-repeat: no-repeat;
+  }
+  
+  .select select:hover{
+    background: url(./assets/switch.png) no-repeat center center;
+    background-size: contain;
+    transform: scale(1.1);
+  }
+
+
+  .select::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333;
+  }
+
+nav #cfg {
+    bottom: 10px;
+    left: 10px;
+    cursor: pointer;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+
+    z-index: 1;
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+   
+    font-weight: 500;
+    /*transform: translate(-50%, -50%);*/
+  
+  }
+  nav #cfg:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  }
+
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    backdrop-filter: blur(10px);
+    max-width: 90vw;
+    margin: 1vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    max-height: 95vh;
+    min-height: 90vh;
+    padding: 10px;
+    padding-bottom: 25px;
+    background-color: #ffffff33;
+    border-radius: 8px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.219);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color:#ffffff;
+    text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+.grupos {
+
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.grupos p {
+    font-size: 10px;
+    color: white;
+    margin-bottom: -5px;
+    padding: 5px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    width: 80px;
+}
+
+.labels-container {
+    display: flex; 
+    overflow-x: auto; 
+    white-space: nowrap;
+    padding: 5px 0; 
+    flex-grow: 1; 
+}
+
+.labels-container::-webkit-scrollbar {
+    display: flex;
+    height: 8px; 
+}
+
+.labels-container::-webkit-scrollbar-track {
+    border-radius: 8px;
+}
+
+.labels-container::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: rgba(164, 191, 212, 0.61);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--stroke-color);
+
+}
+
+
+.grupos label {
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap; 
+    margin-right: 10px; 
+}
+
+.grupos #addGroupBtn {
+    margin-top: -6px;
+    align-self: flex-end; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: url('./assets/+group.png') no-repeat center center;
+    background-size: contain;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 6px;
+}
+
+#GroupObs {
+    position: relative;
+    background: url('./assets/obs.png') no-repeat center center;
+    background-size: contain;
+    left: 3px;
+    width: 15px;
+    height: 15px;
+    border: none;
+}
+
+#GroupObs:hover {
+    transform: scale(1.2);
+}
+
+#obsp{
+    margin-bottom: -5px;
+}
+
+button {
+    display: inline-block;
+    /*margin: 0px 0px 20px;*/
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #b44d27;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+#todas:hover{
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+}
+
+#addVpnBtn {
+    background: url('./assets/+.png') no-repeat center center;
+    background-size: contain;
+    padding: 10px 20px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    
+    
+   
+}
+
+#addVpnBtn:hover {
+    transform: scale(1.2);
+}
+
+#todas {
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+
+#disponiveis {
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#disponiveis:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  
+}
+
+#usando {
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#usando:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  
+  
+}
+
+#encerradas {
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#encerradas:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  
+}
+
+.filtro input[type="text"] {
+    color: white;
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex-grow: 1;
+    backdrop-filter: blur(10px);
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    /*background: var(--surface-color);*/
+    border: 1px solid var(--stroke-color);
+    box-sizing: border-box;
+
+}
+
+.filtro input[type="text"]:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+    
+}
+
+/*button:hover {
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  
+}*/
+
+
+#quantidadeText,
+#quantidadeFiltro {
+    border: none;
+    float: right;
+    margin-right: 15px;
+    color:#ffffff;
+    font-size: 14px;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    color: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 500px;
+
+
+    backdrop-filter: blur(10px);
+    background-color: rgb(16, 23, 42);
+    border-radius: 8px;
+    border: 1px solid var(--stroke-color);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.219);
+    box-sizing: border-box;
+}
+
+.modal-content input,.modal-content textarea{
+    color: white;
+    padding: 10px;
+    backdrop-filter: blur(10px);
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    /*background: var(--surface-color);*/
+    border: 1px solid var(--stroke-color);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.219);
+    box-sizing: border-box;
+
+}
+
+
+#groupObservationsContent {
+    word-wrap: break-word; /* Quebra palavras longas que ultrapassam o container */
+    overflow-wrap: break-word; /* Quebra palavras longas que ultrapassam o container */
+    max-height: 300px; /* Define uma altura máxima para o conteúdo do modal */
+    overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+}
+
+.modal-content textarea::-webkit-scrollbar, #groupObservationsContent::-webkit-scrollbar {
+    width: 8px;  
+    height: 8px;
+}
+  
+.modal-content textarea::-webkit-scrollbar-track, #groupObservationsContent::-webkit-scrollbar-track {
+
+    border-radius: 8px;
+
+}
+  
+.modal-content textarea::-webkit-scrollbar-thumb, #groupObservationsContent::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: rgba(164, 191, 212, 0.61);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--stroke-color);
+}
+
+#GroupObsModal textarea {
+    margin: 15px 0;
+    width: 450px;
+    height: 100px
+  
+}
+
+
+.modal span, .close, .close-link {
+    height: 25px;
+    width: 25px;
+    color: #f81414;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal span:hover,
+.modal span:focus,
+.close:hover,
+.close:focus,
+.close-link:hover,
+.close-link:focus {
+    transform: scale(1.1);
+    color: rgb(92, 9, 9);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+::-webkit-input-placeholder {
+    color: #ffffff75;
+ }
+
+ #searchInput:hover::-webkit-input-placeholder {
+    color: #ffffff;
+ }
+
+
+
+
+/*.cabecalho {
+    display: flex;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.cabecalho span {
+    flex: 1 auto 1; 
+    text-align: center; /
+    padding-inline-end: 100px;
+}*/
+
+
+#vpnList {
+    flex: 1; /* Faz com que o #vpnList ocupe o espaço disponível */
+    overflow-y: auto;
+    margin-top: 10px;
+    border-radius: 8px; /* Opcional: bordas arredondadas */
+}
+
+#vpnList::-webkit-scrollbar {
+    width: 8px;  
+    height: 8px;
+}
+  
+#vpnList::-webkit-scrollbar-track {
+
+    border-radius: 8px;
+
+}
+  
+  #vpnList::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background: rgba(164, 191, 212, 0.61);
+    backdrop-filter: blur(30px);
+    border: 2px solid var(--stroke-color);
+}
+
+#vpnList .vpn-item button[onclick^="openLinkModal"] {
+    background: url('./assets/download.png') no-repeat center center;
+    background-size: contain;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    padding-right: 32px;
+    margin-left: 0px;
+    cursor: pointer;
+}
+
+#vpnList .vpn-item button[onclick^="downloadVPN"]:hover {
+    transform: scale(1.2);
+}
+
+#vpnList .vpn-item button[onclick^="openVpnObsModal"] {
+    background: url('./assets/download.png') no-repeat center center;
+    background-size: contain;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    padding-right: 32px;
+    margin-left: 0px;
+    cursor: pointer;
+}
+
+#vpnList .vpn-item button[onclick^="openVpnObsModal"]:hover {
+    transform: scale(1.2);
+}
+
+.vpn-item {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-weight: 600;
+    /*flex-direction: column;*/
+    
+    align-items: center;
+    padding: 4px;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    margin-right: 10px;
+
+/*  padding: 10px;
+    border-bottom: 1px solid #ddd;*/
+}
+.vpn-item span {
+
+    flex: 1 1 auto;
+    overflow: clip;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    text-align: center;
+   
+    padding: 5px;
+    border-radius: 6px;
+    margin-right: 50px;
+    
+    /*margin: 0px 0px 20px;
+    padding: 10px auto;
+    margin-right: 20px;
+    font-size: 16px;
+    border: solid 1px;
+   border-radius: 4px;
+  
+    color: #000000;
+    flex: 1 1 auto; 
+    white-space: pre-wrap;
+    overflow: hidden;
+    padding-right: 20px;*/
+}
+
+#chavename {
+    font-weight: 600;
+    width: 280px;
+    text-align: left;
+}
+
+#fileexpiration{
+    font-weight: 500;
+    background: rgba(255, 0, 0, 0.144);
+    margin-bottom: 5px;
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    text-shadow: black 0.1em 0.1em 0.2em;
+    text-align: center;
+    width: 50px;
+    margin-bottom: 5px;
+}
+
+
+#emuso {
+    background-color: rgba(230, 87, 31, 0.6);
+    text-shadow: black 0.1em 0.1em 0.2em;
+    text-align: center;
+    width: 100px;
+}
+
+#dispo {
+    text-shadow: black 0.1em 0.1em 0.2em;
+    background-color: rgb(22, 124, 9, 0.6);
+    text-align: center;
+    width: 100px;
+}
+
+#desatv {
+    text-shadow: black 0.1em 0.1em 0.2em;
+    background-color: rgba(128, 128, 128, 0.6);
+    text-align: center;
+    width: 100px;
+}
+
+#usernome {
+    width: 200px;
+    padding-right: 45px;
+}
+
+#usernome2 {
+    width: 200px;
+    padding-right: 103px;
+}
+
+
+#GroupObsModalBox {
+    position: relative;
+    top: -100px;
+    height:
+     500px;
+}
+
+#ObsModalBox {
+    position: relative;
+    top: -100px;
+    height: 500px;
+}
+
+.vpn-item button {
+    margin-left: 10px;
+    padding: 10px 25px;
+    
+}
+#vincula{
+    background: url('./assets/link.png') no-repeat center center;
+    background-size: contain;
+    width: 28px;
+    height: 28px;
+    border-radius: 35px;
+    padding-right: 20px;
+    margin-left: 0px;
+    cursor: pointer;
+}
+#vincula:hover {
+    transform: scale(1.2);
+}
+
+
+#obsvpn {
+    position: relative;
+    background: url('./assets/obs.png') no-repeat center center;
+    background-size: contain;
+    margin-left: -8px;
+    width: 28px;
+    height: 28px;
+    border: none;
+}
+
+
+#desactive{
+    background: url('./assets/desativar.png') no-repeat center center;
+    background-size: contain;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    padding-right: 20px;
+    margin-left: 0px;
+    cursor: pointer;
+}
+
+
+#desactive:hover {
+    transform: scale(1.2);
+}
+
+
+#x {
+    background-color: red;
+    padding: 3px 5px;
+    font-weight: 900;
+}
+
+#x:hover {
+    background-color: rgb(87, 2, 2);
+    transform: scale(1.2);
+   
+    /*padding: 4px 6px;*/
+
+}
+
+footer {
+    text-align: center;
+    position: absolute;
+    bottom: -2px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 10px;
+    color: #fdfdfd9f;
+    
+
+}
