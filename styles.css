@@ -124,6 +124,35 @@ nav #cfg {
     font-weight: 500;
   }
 
+  nav #showUsersBtn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+
+    z-index: 1;
+    font-size: 12px;
+    padding: 10px 10px;
+    background: var(--surface-color);
+    border: 1px solid var(--stroke-color);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+   
+    font-weight: 500;
+    /*transform: translate(-50%, -50%);*/
+  
+  }
+  nav #showUsersBtn:hover {
+    background: #b44d27;
+    backdrop-filter: blur(30px);
+    border: 3px solid var(--stroke-color);
+    font-weight: 500;
+  }
+
+
 
   .container {
     display: flex;
@@ -502,24 +531,14 @@ button {
     color: #ffffff;
  }
 
-
-
-
-/*.cabecalho {
-    display: flex;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    box-sizing: border-box;
-    font-weight: bolder;
-    font-size: 18px;
+#userModal-content {
+    max-width: 900px;
 }
 
-.cabecalho span {
-    flex: 1 auto 1; 
-    text-align: center; /
-    padding-inline-end: 100px;
-}*/
-
+#userModal td {
+    width: 1000px;
+    padding: 10px;
+}
 
 #vpnList {
     flex: 1; /* Faz com que o #vpnList ocupe o espaço disponível */
@@ -745,6 +764,28 @@ button {
    
     /*padding: 4px 6px;*/
 
+}
+
+tr {
+    width: 100px;
+}
+
+.status-icon {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+.status-icon.online {
+    background-color: green;
+    box-shadow: 0 0 0.2em #8F7;
+}
+
+.status-icon.offline {
+    background-color: red;
+    box-shadow: 0 0 0.2em rgb(255, 119, 119);
 }
 
 footer {

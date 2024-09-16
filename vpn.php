@@ -79,6 +79,7 @@ $groups = getGroups($enterprise);
 
     <nav>
         <a id="cfg"  style="display: none;"   href="cfg" title="Configurar">Configurações</a>
+        <button style="display: none;" id="showUsersBtn">Usuários Conectados</button>
       </nav>
 
 
@@ -241,6 +242,29 @@ $groups = getGroups($enterprise);
         <input type="hidden" id="vpnIdToAdDeactivate" value="">
     </div>
 </div>
+
+
+<div id="userModal" class="modal">
+    <div id="userModal-content" class="modal-content">
+        <span class="closeUsersBtn">&times;</span>
+        <h2>Usuários Conectados</h2>
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Usuário</th>
+                    <th>Navegador</th>
+                    <th>Data de Login</th>
+                    <th>IP</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 
     <script src="config.php"></script>

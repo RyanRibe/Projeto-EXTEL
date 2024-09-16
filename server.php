@@ -118,6 +118,46 @@ if ($typeuser === 'admin' && isset($_POST['enterprise'])) {
     $_SESSION['enterprise'] = $enterprise;
 }
 
+if ($_GET['action'] === 'getUserLogs') {
+    try {
+        // Consulta para buscar os usuários e calcular o tempo online para os offline
+        $stmt = $pdo->query("
+            SELECT 
+     username, 
+    useragent, 
+    lastlogindate, 
+    lastip, 
+    status1,
+    CASE 
+        WHEN status1 = 'offline' THEN TIMEDIFF(last_activity, lastlogindate)
+        ELSE NULL 
+    END AS time_online
+FROM users
+ORDER BY 
+    CASE 
+        WHEN status1 = 'online' THEN 0 
+        ELSE 1 
+    END,
+    lastlogindate DESC;
+
+        ");
+
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Retorne os dados como JSON
+        echo json_encode(['success' => true, 'users' => $users]);
+
+        // Pare a execução após a resposta JSON
+        exit();
+
+    } catch (PDOException $e) {
+        // Capture o erro e retorne-o como JSON
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        exit(); // Certifique-se de parar a execução após o erro também
+    }
+}
+
+
 function handleUpdateEnterprise() {
     global $pdo;
 
@@ -715,5 +755,3 @@ function handleLinkVPN($enterprise) {
         echo json_encode(['error' => 'Erro ao vincular VPN: ' . $e->getMessage()]);
     }
 }
-
-

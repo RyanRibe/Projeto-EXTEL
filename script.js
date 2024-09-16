@@ -4,28 +4,25 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentFilter = 'todas';
 
     
-    // Verifica se o usuário é admin
     if (typeuser === 'admin') {
         const adminSection = document.getElementById('adminSection');
         const enterpriseSelect = document.getElementById('enterprise');
         const cfg = document.getElementById('cfg');
         const addVpnBtn = document.getElementById('addVpnBtn');
         const addGroupBtn = document.getElementById('addGroupBtn');
+        const showUsersBtn = document.getElementById('showUsersBtn')
    
-
-        // Exibe o seletor
         adminSection.style.display = 'block';
         cfg.style.display = 'block';
         addVpnBtn.style.display = '';
         addGroupBtn.style.display = '';
+        showUsersBtn.style.display = '';
 
-        // Adiciona as opções de tabela ao seletor
         tables.forEach(table => {
             const option = document.createElement('option');
             option.value = table;
             option.textContent = table.toUpperCase(); 
 
-            // Se esta opção for igual à empresa selecionada na sessão, marca como selecionada
             if (table === selectedEnterprise) {
                 option.selected = true;
             }
@@ -884,5 +881,63 @@ window.addEventListener('pagehide', markOffline);
 document.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {
         markOffline();
+    }
+});
+
+
+function loadUserLogs() {
+
+    fetch('server.php?action=getUserLogs')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const userTableBody = document.querySelector('#userTable tbody');
+                userTableBody.innerHTML = ''; 
+
+                data.users.forEach(user => {
+                    const row = document.createElement('tr');
+
+                    // Verifica o status e define a bolinha correspondente
+                    const statusDisplay = user.status1 === 'offline'
+                        ? `<span class="status-icon offline"></span> Offline (Tempo conectado: ${user.time_online || 'N/A'})`
+                        : `<span class="status-icon online"></span> Online`;
+
+                    row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.useragent}</td>
+                        <td>${user.lastlogindate}</td>
+                        <td>${user.lastip}</td>
+                        <td>${statusDisplay}</td>
+                    `;
+                    userTableBody.appendChild(row);
+                });
+            } else {
+                alert('Erro ao carregar os logs de usuários: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar os logs de usuários:', error);
+        });
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('userModal');
+    const showUsersBtn = document.getElementById('showUsersBtn');
+    const closeUsersBtn = document.querySelector('.closeUsersBtn');
+
+    showUsersBtn.onclick = function() {
+        modal.style.display = 'block';
+        loadUserLogs(); 
+    }
+
+    closeUsersBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
     }
 });
