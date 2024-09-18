@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             $_SESSION['id'] = $user['id']; 
             $_SESSION['typeuser'] = $user['typeuser'];
             $_SESSION['enterprise'] = $user['enterprise'];
-
+            $_SESSION['username'] = $username;
             // Obter IP e User-Agent do usuário
             $userIp = $_SERVER['REMOTE_ADDR'];
             $userAgent = $_SERVER['HTTP_USER_AGENT']; 
@@ -414,10 +414,12 @@ function handleSaveObservation($enterprise) {
         $now = new DateTime(); // Cria um novo objeto DateTime
         $nowFormatted = $now->format('Y-m-d H:i:s'); // Formata a data no padrão Y-m-d H:i:s
 
+        $lastdowndateWithUser = $nowFormatted . ' por ' . $_SESSION['username'];
+
         // Atualiza o campo downobs e lastdowndate da VPN no banco de dados
         $stmt = $pdo->prepare("UPDATE {$enterprise} SET downobs = :observation, lastdowndate = :lastdowndate WHERE id = :id");
         $stmt->bindParam(':observation', $observation);
-        $stmt->bindParam(':lastdowndate', $nowFormatted); // Usa a data e hora formatada
+        $stmt->bindParam(':lastdowndate', $lastdowndateWithUser); // Usa a data e hora formatada
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
 
@@ -669,9 +671,21 @@ function handleDeactivateVPN($enterprise) {
 
     try {
         $enterprise = sanitizeTableName($enterprise);
+        date_default_timezone_set('America/Sao_Paulo');
+        $now = new DateTime();
+        $nowFormatted = $now->format('Y-m-d H:i:s');
 
-        // Atualiza o status da VPN para 'desativado' e grava a data de desativação
-        $stmt = $pdo->prepare("UPDATE {$enterprise} SET status = 'desativado', deactivateddate = NOW() WHERE id = :id");
+        // Garantir que $_SESSION['username'] está definida
+        if (!isset($_SESSION['username'])) {
+            echo json_encode(['error' => 'Usuário não está logado.']);
+            exit();
+        }
+
+        $deactivatedDateWithUser = $nowFormatted . ' por ' . $_SESSION['username'];
+
+        // Atualizar o status da VPN
+        $stmt = $pdo->prepare("UPDATE {$enterprise} SET status = 'desativado', deactivateddate = :deactivatedDate WHERE id = :id");
+        $stmt->bindParam(':deactivatedDate', $deactivatedDateWithUser);
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
 
@@ -743,9 +757,15 @@ function handleLinkVPN($enterprise) {
     }
 
     try {
+        date_default_timezone_set('America/Sao_Paulo');
+        $now = new DateTime();
+        $nowFormatted = $now->format('Y-m-d H:i:s');
+        $firstdowndateWithUser = $nowFormatted . ' por ' . $_SESSION['username'];
+
         $enterprise = sanitizeTableName($enterprise);
-        $stmt = $pdo->prepare("UPDATE {$enterprise} SET user_name = :userName, status = 'em_uso', firstdowndate = NOW() WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE {$enterprise} SET user_name = :userName, status = 'em_uso', firstdowndate = :firstdowndate WHERE id = :id");
         $stmt->bindParam(':userName', $userName);
+        $stmt->bindParam(':firstdowndate', $firstdowndateWithUser);
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
 

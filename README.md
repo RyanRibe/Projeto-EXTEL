@@ -15,14 +15,13 @@ CREATE TABLE `nome_da_empresa` (
   `user_name` varchar(100) DEFAULT NULL,
   `group` varchar(255) NOT NULL,
   `GroupObservation` text NOT NULL,
-  `lastdowndate` datetime DEFAULT NULL,
+  `lastdowndate` varchar(250) DEFAULT NULL,
   `ExpirationDate` varchar(60) DEFAULT NULL,
   `downobs` text,
-  `deactivateddate` datetime DEFAULT NULL,
-  `firstdowndate` datetime DEFAULT NULL,
+  `deactivateddate` varchar(250) DEFAULT NULL,
+  `firstdowndate` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
+) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 Tabela de Usuários:
 
