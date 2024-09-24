@@ -20,8 +20,6 @@ body {
 }
 
 a {
-    background: url('./assets/voltar.png') no-repeat center center;
-    background-size: contain;
     margin: 5px;
     padding: 10px;
     border: none;
@@ -32,6 +30,8 @@ a {
 }
 
 #logout {
+    background: url('./assets/voltar.png') no-repeat center center;
+    background-size: contain;
     position: absolute;
     top: 0;
     right: 0;
@@ -45,6 +45,65 @@ a {
     background-size: contain;
     transform: scale(1.1);
 
+}
+
+#resetpw {
+    background: url('./assets/reseth.png') no-repeat center center;
+    background-size: contain;
+    position: absolute;
+    top: 0px;
+    right: 50px;
+    padding: 20px;
+    z-index: 1; 
+    
+}
+
+#resetpw:hover{
+    background: url('./assets/reset.png') no-repeat center center;
+    background-size: contain;
+    transform: scale(1.1);
+
+}
+
+#icon {
+    position: relative;
+    top: 45px;
+    left: 150px;
+    z-index: 1;
+    transform: translateY(-50%);
+    opacity: 30%;
+    background: url('./assets/showw.png')no-repeat center center;
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+
+#icon.hide {
+    background: url('./assets/hidew.png')no-repeat center center;
+    background-size: contain;
+}
+
+
+#icon1 {
+    position: relative;
+    top: 45px;
+    left: 150px;
+    z-index: 1;
+    transform: translateY(-50%);
+    opacity: 30%;
+    background: url('./assets/showw.png')no-repeat center center;
+    background-size: contain;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+
+#icon1.hide {
+    background: url('./assets/hidew.png')no-repeat center center;
+    background-size: contain;
 }
 
 .select {

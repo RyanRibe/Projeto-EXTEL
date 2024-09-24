@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
                 const selectedGroup = selectedGroupElement.value;
         
-                // Recupera as informações do grupo (expiração e observação) diretamente do servidor
+                // Recupera as informações do grupo diretamente do servidor
                 fetch(`server.php?action=getGroupDetails&group=${encodeURIComponent(selectedGroup)}`)
                     .then(response => response.json())
                     .then(data => {
@@ -362,26 +362,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    function formatDate(inputDate) {
+    function formatDate(inputDate) {    
         const months = {
             'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04',
             'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08',
             'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
         };
     
-        // Exemplo de data de entrada: "Mar 25 10:36:45 2027"
-        // Divida a data e a hora
-        const [month, day, time, year] = inputDate.split(' ');
-        const [hour, minute] = time.split(':'); // Divide hora e minuto
+        // Remove espaços extras e divide a string
+        const parts = inputDate.trim().split(/\s+/); // Usando regex para dividir por múltiplos espaços
+    
+        if (parts.length !== 4) {
+            throw new Error('Formato de data inválido');
+        }
+    
+        const [month, day, time, year] = parts;
+        const [hour, minute] = time.split(':');
+    
+        // Verificações adicionais
+        if (!months[month] || isNaN(day) || isNaN(hour) || isNaN(minute) || !year) {
+            throw new Error('Formato de data inválido');
+        }
     
         const formattedMonth = months[month];
         const formattedDay = day.padStart(2, '0'); // Garante que o dia tenha dois dígitos
         const formattedYear = year;
     
-        // Retorna a data no formato dd-mm-yyyy hr:mm
         return `${formattedDay}-${formattedMonth}-${formattedYear} ${hour}:${minute}`;
     }
-    
     
     
     function renderVPNList(searchTerm = '') {
@@ -705,8 +713,10 @@ document.getElementById('confirmAdDeactivateBtn').addEventListener('click', func
         },
         body: JSON.stringify({ vpnId: vpnId, deactivateAdUser: true })
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => response.text()) // Alterado para .text() temporariamente
+    .then(text => {
+        console.log('Resposta do servidor:', text); // Verifique o conteúdo real
+        const data = JSON.parse(text); // Parse manualmente após verificar
         if (data.success) {
             alert('Foi aberto um chamado para desativar a VPN e o usuário do AD. Acompanhe o andamento através do portal de chamados: extel.tomticket.com');
             fetchVPNs(); // Atualiza a lista de VPNs
@@ -717,7 +727,7 @@ document.getElementById('confirmAdDeactivateBtn').addEventListener('click', func
     .catch(error => {
         console.error('Erro ao desativar VPN:', error);
         alert('Erro ao desativar VPN. Verifique o console para mais detalhes.');
-    })
+    })    
     .finally(() => {
         // Fecha o modal após a operação e reativa os botões
         document.getElementById('adDeactivateModal').style.display = 'none';

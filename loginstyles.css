@@ -139,8 +139,8 @@ img {
     z-index: 1;
     transform: translateY(-50%);
     opacity: 30%;
-    background: url('./assets/show.png')no-repeat center center;
-    background-size: cover;
+    background: url('./assets/showw.png')no-repeat center center;
+    background-size: contain;
     width: 25px;
     height: 25px;
     cursor: pointer;
@@ -148,9 +148,11 @@ img {
 
 
 #icon.hide {
-    background: url('./assets/hide.png')no-repeat center center;
-    background-size: cover;
+    background: url('./assets/hidew.png')no-repeat center center;
+    background-size: contain;
 }
+
+
 
 footer {
     text-align: center;

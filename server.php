@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
     $password = $_POST['password'];
 
     try {
-        $stmt = $pdo->prepare("SELECT id, typeuser, enterprise, password FROM users WHERE username = :username");
+        $stmt = $pdo->prepare("SELECT id, typeuser, enterprise, resetpassword, password FROM users WHERE username = :username");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
 
@@ -71,6 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             $_SESSION['typeuser'] = $user['typeuser'];
             $_SESSION['enterprise'] = $user['enterprise'];
             $_SESSION['username'] = $username;
+
+                  // Checa resetpassword é igual a 1
+        if ($user['resetpassword'] == 1) {
+                               
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['username'] = $username;
+            echo "Redirecionando para a redefinição de senha..."; 
+            header('Location: /reset_password.php');
+            exit();
+            }
+
             // Obter IP e User-Agent do usuário
             $userIp = $_SERVER['REMOTE_ADDR'];
             $userAgent = $_SERVER['HTTP_USER_AGENT']; 
@@ -156,7 +167,6 @@ ORDER BY
         exit(); // Certifique-se de parar a execução após o erro também
     }
 }
-
 
 function handleUpdateEnterprise() {
     global $pdo;
@@ -660,12 +670,15 @@ function handleDeactivateVPN($enterprise) {
     global $pdo;
 
     $input = json_decode(file_get_contents('php://input'), true);
+    error_log('Input recebido: ' . print_r($input, true));  // Verifique o que está sendo recebido
+
     $vpnId = isset($input['vpnId']) ? $input['vpnId'] : null;
     $deactivateAdUser = isset($input['deactivateAdUser']) ? $input['deactivateAdUser'] : false;
 
     if (!$vpnId) {
         http_response_code(400);
         echo json_encode(['error' => 'ID da VPN não especificado']);
+        error_log('Erro: ID da VPN não especificado');
         return;
     }
 
@@ -675,70 +688,78 @@ function handleDeactivateVPN($enterprise) {
         $now = new DateTime();
         $nowFormatted = $now->format('Y-m-d H:i:s');
 
-        // Garantir que $_SESSION['username'] está definida
         if (!isset($_SESSION['username'])) {
             echo json_encode(['error' => 'Usuário não está logado.']);
+            error_log('Erro: Usuário não está logado');
             exit();
         }
 
         $deactivatedDateWithUser = $nowFormatted . ' por ' . $_SESSION['username'];
+        error_log('Data de desativação: ' . $deactivatedDateWithUser);
 
         // Atualizar o status da VPN
         $stmt = $pdo->prepare("UPDATE {$enterprise} SET status = 'desativado', deactivateddate = :deactivatedDate WHERE id = :id");
         $stmt->bindParam(':deactivatedDate', $deactivatedDateWithUser);
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
+        error_log('Status atualizado para desativado');
 
         $stmt = $pdo->prepare("SELECT filename, user_name FROM {$enterprise} WHERE id = :id LIMIT 1");
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
         $vpn = $stmt->fetch(PDO::FETCH_ASSOC);
+        error_log('VPN obtida: ' . print_r($vpn, true));
 
         if ($vpn) {
             $filenameWithoutExtension = pathinfo($vpn['filename'], PATHINFO_FILENAME);
             $enterprise = ucfirst(strtolower($enterprise));
-            $to = 'new-16b77804d57e406a5206d7d5aced76cc@extel.tomticket.com'; 
+            $to = 'adryanrybeiro123@gmail.com'; 
             $subject = 'Desativar VPN ' . $filenameWithoutExtension . ' - ' . $enterprise;
 
-            // Altera a mensagem dependendo da escolha do usuário
-            if ($deactivateAdUser) {
-                $message = "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\". Também foi solicitado desativar o usuário do AD.";
-            } else {
-                $message = "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\".";
-            }
+            $message = $deactivateAdUser ?
+                "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\". Também foi solicitado desativar o usuário do AD." :
+                "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\".";
 
+            error_log('Mensagem de e-mail: ' . $message);
+
+            // Tente enviar o e-mail usando PHPMailer
             $mail = new PHPMailer(true);
             try {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'ryanrybeiro123@gmail.com'; 
+                $mail->Username = 'ryanrybeiro123@gmail.com';
                 $mail->Password = 'paof elvc dgne czrz';
                 $mail->SMTPSecure = 'ssl'; 
-                $mail->Port = 465; 
+                $mail->Port = 465;
 
-                
-                $mail->CharSet = 'UTF-8'; 
-
+                $mail->CharSet = 'UTF-8';
                 $mail->setFrom('no-reply@extel.com', 'Extel-Bot');
-                $mail->addAddress($to); 
+                $mail->addAddress($to);
                 $mail->Subject = $subject;
                 $mail->Body = $message;
 
                 $mail->send();
+                error_log('E-mail enviado com sucesso');
                 echo json_encode(['success' => true]);
+                exit();
             } catch (Exception $e) {
                 error_log('Erro ao enviar o e-mail: ' . $mail->ErrorInfo);
                 http_response_code(500);
                 echo json_encode(['error' => 'Erro ao enviar o e-mail: ' . $mail->ErrorInfo]);
+                exit();
             }
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'VPN não encontrada no banco de dados.']);
+            error_log('VPN não encontrada no banco de dados');
+            exit();
         }
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Erro ao desativar VPN: ' . $e->getMessage()]);
+        error_log('Erro ao desativar VPN: ' . $e->getMessage());
+        exit();
     }
 }
 

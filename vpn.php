@@ -71,7 +71,6 @@ $groups = getGroups($enterprise);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>VPN - <?php echo htmlspecialchars(strtoupper($enterprise)); ?></title>
-
     <link rel="icon" type="image/x-icon" href="./assets/favico.png">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -82,7 +81,9 @@ $groups = getGroups($enterprise);
         <button style="display: none;" id="showUsersBtn">Usuários Conectados</button>
       </nav>
 
-
+    <nav>
+    <a id="resetpw" href="reset_password.php" title="Trocar senha"></a>
+</nav>
 
 <body>
 
@@ -265,6 +266,18 @@ $groups = getGroups($enterprise);
     </div>
 </div>
 
+<div id="resetModal"  class="modal">
+        <form method="POST" class="modal-content">
+            <label for="current_password">Senha Atual:</label>
+            <input type="password" id="current_password" name="current_password" required>
+            
+            <label for="new_password">Nova Senha:</label>
+            <input type="password" id="new_password" name="new_password" required>
+
+            <button type="submit">Atualizar Senha</button>
+        </form>
+        <?php if (isset($error)) { echo "<p>$error</p>"; } ?>
+    </div>
 
 
     <script src="config.php"></script>
