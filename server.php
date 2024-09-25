@@ -54,6 +54,21 @@ function parseUserAgent($userAgent) {
     return $device . ' - ' . $browser;
 }
 
+function updateTablesList($pdo) {
+    $tablesStmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'vpns' AND table_name <> 'users' AND table_name <> 'mediacoes'");
+    $tables = $tablesStmt->fetchAll(PDO::FETCH_COLUMN);
+    $_SESSION['tables'] = $tables; 
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'backToVpn') {
+    // Executar a função para atualizar a lista de tabelas
+    updateTablesList($pdo);
+
+    // Redirecionar para a página VPN após atualizar a lista de tabelas
+    header('Location: /vpn');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -94,12 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             $updateStmt->bindParam(':id', $user['id']);
             $updateStmt->execute();
 
-            // Verificação para usuários administradores
             if ($user['typeuser'] === 'admin') {
-                $tablesStmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'vpns' AND table_name <> 'users' AND table_name <> 'mediacoes'");
-                $tables = $tablesStmt->fetchAll(PDO::FETCH_COLUMN);
-                $_SESSION['tables'] = $tables; 
+                updateTablesList($pdo);
             }
+            
 
             header('Location: /vpn');
             exit();
@@ -625,9 +638,10 @@ function handleDownloadVPN() {
             date_default_timezone_set('America/Sao_Paulo'); 
             $now = new DateTime(); 
             $nowFormatted = $now->format('Y-m-d H:i:s'); 
+            $lastdowndateWithUser = $nowFormatted . ' por ' . $_SESSION['username'];
 
             $stmt = $pdo->prepare("UPDATE {$enterprise} SET lastdowndate = :lastdowndate WHERE id = :id");
-            $stmt->bindParam(':lastdowndate', $nowFormatted);
+            $stmt->bindParam(':lastdowndate', $lastdowndateWithUser);
             $stmt->bindParam(':id', $vpnId);
             $stmt->execute();
 

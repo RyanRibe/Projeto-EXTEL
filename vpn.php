@@ -77,7 +77,7 @@ $groups = getGroups($enterprise);
     <a id="logout" href="logout.php" title="Sair"></a>
 
     <nav>
-        <a id="cfg"  style="display: none;"   href="cfg" title="Configurar">Configurações</a>
+        <a id="cfg"  style="display: none;"   href="cfg/cfg.php" title="Configurar">Configurações</a>
         <button style="display: none;" id="showUsersBtn">Usuários Conectados</button>
       </nav>
 
