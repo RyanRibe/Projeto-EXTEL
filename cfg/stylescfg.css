@@ -30,6 +30,11 @@ a {
     
 }
 
+h2 {
+    font-weight: 900;
+    font-size:xx-large;
+}
+
 #logout {
     background: url('./assets/voltar.png') no-repeat center center;
     background-size: contain;
@@ -52,6 +57,7 @@ button {
     display: inline-block;
     /*margin: 0px 0px 20px;*/
     padding: 10px;
+    max-width: 150px;
     font-size: 16px;
     border: none;
     border-radius: 4px;
@@ -67,6 +73,15 @@ button {
     left: 0;
 }
 
+ul {
+    font-size: x-large;
+    margin-bottom: 10px;
+}
+
+li {
+    margin-bottom: 10px;
+
+}
 .modal {
     display: none;
     position: fixed;
@@ -128,4 +143,72 @@ button {
     color: rgb(92, 9, 9);
     text-decoration: none;
     cursor: pointer;
+}
+
+.modal h2 {
+    text-align: center; /* Centraliza o título */
+}
+
+.modal form {
+    display: flex; /* Usar flexbox */
+    flex-direction: column; /* Coluna para alinhar itens um abaixo do outro */
+}
+
+.modal label {
+    margin: 10px 0 5px; /* Margem entre label e input */
+}
+
+.modal input[type="text"],
+.modal input[type="password"],
+.modal select {
+    padding: 10px; /* Espaçamento interno nos campos */
+    border: 1px solid #ccc; /* Borda padrão */
+    border-radius: 4px; /* Bordas arredondadas nos campos */
+    width: 100%; /* Largura total dos campos */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    margin-bottom: 5px;
+}
+
+/* Container for both configurations */
+.config-wrapper {
+    display: flex;
+    justify-content: space-between; /* Space between the two sections */
+    align-items: flex-start;        /* Align items to the top */
+    gap: 20px;                      /* Space between the columns */
+    padding: 20px;
+    margin-right: 50px;
+}
+
+/* Left column for company configurations */
+.company-config {
+    flex: 1;                        /* Take up equal space */
+     /* Light gray background */
+    padding: 15px;
+    border: 1px solid #ccc;         /* Light border */
+    border-radius: 5px;             /* Rounded corners */
+    max-width: 45%;                 /* Control the maximum width */
+}
+
+/* Right column for user configurations */
+.user-config {
+    flex: 1;                        /* Take up equal space */
+   /* Light gray background */
+    padding: 15px;
+    border: 1px solid #ccc;         /* Light border */
+    border-radius: 5px;             /* Rounded corners */
+    max-width: 45%;                 /* Control the maximum width */
+}
+
+/* Style list items for better presentation */
+#config-list, #users-list {
+    list-style-type: none;          /* Remove bullet points */
+    padding: 0;
+}
+
+#config-list li, #users-list li {
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
 }

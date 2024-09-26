@@ -10,7 +10,7 @@ try {
     $pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $pdo->query("SHOW TABLES");
+    $stmt = $pdo->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'vpns' AND table_name <> 'users'");
     $companies = [];
 
     while ($row = $stmt->fetch(PDO::FETCH_NUM)) {

@@ -66,7 +66,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_password'], $
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="./assets/favico.png">
     <title>Redefinir Senha</title>
-    
+    <a type="button" id="back-button" href="javascript:history.back()" style='
+    SSdisplay: inline-block;
+    /*margin: 0px 0px 20px;*/
+    padding: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #b44d27;
+    color: #fff;
+    transition: background-color 0.3s ease;'>Voltar ↩︎</a>
 </head>
 <body>
     <h2 class="modal">Redefinir Senha</h2>

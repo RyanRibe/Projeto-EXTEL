@@ -6,7 +6,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Database connection using PDO
 $dbHost = 'localhost';
 $dbPort = '3306';
 $dbName = 'vpns';
@@ -17,7 +16,7 @@ try {
     $pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Fetch data from POST request
+
     $originalUsername = $_POST['original_username'];
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -25,7 +24,7 @@ try {
     $enterprise = $_POST['enterprise'];
     $resetpassword = $_POST['resetpassword'];
 
-    // Update query (if the password is not empty, we'll update it)
+
     if (!empty($password)) {
         $query = "UPDATE users SET username = :username, password = :password, typeuser = :typeuser, enterprise = :enterprise, resetpassword = :resetpassword WHERE username = :original_username";
         $stmt = $pdo->prepare($query);
