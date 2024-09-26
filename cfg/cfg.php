@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <!-- Modal para adicionar usuário -->
 <div id="user-modal" class="modal">
-    <div class="modal-content">
+    <div id="user-modal-content" class="modal-content">
         <span class="close-user-modal">&times;</span>
         <h2>CRIAR NOVO USUÁRIO</h2>
         <form id="add-user-form">
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <!-- Modal para editar usuário -->
 <div id="edit-user-modal" class="modal">
-    <div class="modal-content">
+    <div id="edit-user-modal-content"class="modal-content">
         <span class="close-edit-user-modal">&times;</span>
         <h2>EDITAR USUÁRIO</h2>
         <form id="edit-user-form">
