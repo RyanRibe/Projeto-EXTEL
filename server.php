@@ -4,6 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require './vendor/autoload.php'; // Autoload do Composer para o PHPMailer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 // Conexão com o banco de dados
 $dbHost = 'localhost';
 $dbPort = '3306';
@@ -117,13 +122,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             header('Location: /vpn');
             exit();
         } else {
-            echo 'Usuário ou senha inválidos.';
+            $_SESSION['login_error'] = 'Usuário ou senha inválidos.';
+            header('Location: login.php'); 
+            exit();
         }
     } catch (PDOException $e) {
-        echo 'Erro ao verificar login: ' . $e->getMessage();
+        $_SESSION['login_error'] = 'Erro ao verificar login: ' . $e->getMessage();
+        header('Location: login.php'); 
+        exit();
     }
 }
-
 
 $url = $_SERVER['REQUEST_URI'];
 
@@ -550,22 +558,30 @@ function handleListVPNs($enterprise) {
 function getAdminPassword() {
     global $pdo;
     
+    if (!isset($_SESSION['username'])) {
+        throw new Exception('Nenhum usuário está logado na sessão.');
+    }
+
+    $loggedInUsername = $_SESSION['username'];
+
     try {
-        $stmt = $pdo->query("SELECT password FROM users WHERE username = 'admin'");
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare("SELECT password FROM users WHERE username = :username");
+        $stmt->bindParam(':username', $loggedInUsername);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if ($admin) {
-            return $admin['password'];
+        if ($user) {
+            return $user['password'];
         } else {
-            throw new Exception('Admin user not found in database.');
+            throw new Exception('Usuário não encontrado na base de dados.');
         }
     } catch (PDOException $e) {
-        throw new Exception('Erro ao buscar senha do admin: ' . $e->getMessage());
+        throw new Exception('Erro ao buscar a senha do usuário: ' . $e->getMessage());
     } catch (Exception $e) {
         throw new Exception($e->getMessage());
     }
 }
-
 
 function handleDeleteVPN($enterprise) {
     global $pdo;

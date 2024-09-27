@@ -426,22 +426,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? formatDate(vpn.ExpirationDate) 
                 : 'Não disponível';
     
-            vpnItem.innerHTML = `
+                vpnItem.innerHTML = `
                 <span id="chavename">${filenameWithoutExtension}</span>
                 <span>Expira em: <span id="fileexpiration">${expirationDate}</span></span>
-                ${vpn.status === 'disponivel' ? `<span id="dispo">Disponível</span>`:''}
-                ${vpn.status === 'disponivel' ? `<span id="usernome"></span>`:''}
-                ${vpn.status === 'em_uso' ? `<span id="emuso">Em uso</span>`:''}
-                ${vpn.status === 'em_uso' ? `<span id="usernome">${vpn.user_name}</span>`:''}
-                ${vpn.status === 'desativado' ? `<span id="desatv">Desativado</span>`:''}
-                ${vpn.status === 'desativado' ? `<span id="usernome2">${vpn.user_name}</span>`:''}          
-                ${vpn.status === 'disponivel' ? `<button id="down" title="Download VPN" onclick="openLinkModal(${vpn.id}, '${vpn.filename}')"></button>`:''}
-                ${vpn.status === 'em_uso' ? `<button id="down2" title="Download VPN" onclick="openVpnObsModal(${vpn.id}, '${vpn.filename}')"></button>`:''}
-                <button id="obsvpn" title="Observações da Chave" onclick="showObservationModal(${vpn.id})"></button>
-                ${vpn.status === 'em_uso' ? `<button id="desactive" title="Desativar VPN" onclick="deactivateVPN(${vpn.id})"></button>` : ''}
-                ${typeuser === 'admin' ? `<button id="x" title="Excluir VPN" onclick="showDeleteModal(${vpn.id})">X</button>` : ''}
+                ${vpn.status === 'disponivel' ? `<span id="dispo">Disponível</span>` : ''}
+                ${vpn.status === 'em_uso' ? `<span id="emuso">Em uso</span>` : ''}
+                ${vpn.status === 'desativado' ? `<span id="desatv">Desativado</span>` : ''}
+                ${vpn.status === 'em_uso' || vpn.status === 'desativado' ? `<span id="usernome">${vpn.user_name}</span>` : `<span id="usernome">&nbsp;</span>`}
             `;
     
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+    
+            if (vpn.status === 'disponivel') {
+                buttonContainer.innerHTML += `<button id="down" title="Download VPN" onclick="openLinkModal(${vpn.id}, '${vpn.filename}')"></button>`;
+            }
+    
+            if (vpn.status === 'em_uso') {
+                buttonContainer.innerHTML += `<button id="down2" title="Download VPN" onclick="openVpnObsModal(${vpn.id}, '${vpn.filename}')"></button>`;
+                buttonContainer.innerHTML += `<button id="desactive" title="Desativar VPN" onclick="deactivateVPN(${vpn.id})"></button>`;
+            }
+    
+            buttonContainer.innerHTML += `<button id="obsvpn" title="Observações da Chave" onclick="showObservationModal(${vpn.id})"></button>`;
+    
+            if (typeuser === 'admin') {
+                buttonContainer.innerHTML += `<button id="x" title="Excluir VPN" onclick="showDeleteModal(${vpn.id})">X</button>`;
+            }
+    
+            vpnItem.appendChild(buttonContainer);
             vpnList.appendChild(vpnItem);
         });
     }

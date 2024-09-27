@@ -10,7 +10,7 @@ body {
     align-content: center;
     min-height: 100vh;
 
-    background: url(./assets/bk3.jpg)no-repeat center center;
+    background: url(./assets/bk3.jpg)repeat center center;
     background-position: top center;
     background-size: cover;
 --stroke-color: rgba(255, 255, 255, 0.5);

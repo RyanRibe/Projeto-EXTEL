@@ -24,6 +24,13 @@
             <p>Bem-vindo ao sistema de gerenciamento de chaves VPN.</p>
             <h1>Login</h1>
             
+            <?php
+                session_start();
+                if (isset($_SESSION['login_error'])) {
+                    echo '<p style="color:red;">' . $_SESSION['login_error'] . '</p>';
+                    unset($_SESSION['login_error']); 
+                }
+                ?>
             
             <input placeholder="Usuário" autocomplete="off"  type="text" id="username" name="username" required>
       

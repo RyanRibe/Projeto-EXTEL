@@ -616,33 +616,130 @@ button {
     padding: 10px;
 }
 
+/* Estilo do contêiner da lista VPN */
 #vpnList {
-    flex: 1; /* Faz com que o #vpnList ocupe o espaço disponível */
-    overflow-y: auto;
+    max-height: 600px; /* Defina a altura máxima desejada para o contêiner */
+    overflow-y: auto;  
     margin-top: 10px;
-    border-radius: 8px; /* Opcional: bordas arredondadas */
+    border-radius: 8px; 
+    padding: 5px; 
 }
 
+/* Estilo da barra de rolagem */
 #vpnList::-webkit-scrollbar {
     width: 8px;  
     height: 8px;
 }
   
 #vpnList::-webkit-scrollbar-track {
-
     border-radius: 8px;
-
 }
   
-  #vpnList::-webkit-scrollbar-thumb {
+#vpnList::-webkit-scrollbar-thumb {
     border-radius: 50px;
     background: rgba(164, 191, 212, 0.61);
     backdrop-filter: blur(30px);
-    border: 2px solid var(--stroke-color);
+    border: 2px solid var(--stroke-color); 
 }
 
-#vpnList .vpn-item button[onclick^="openLinkModal"] {
-    background: url('./assets/download.png') no-repeat center center;
+/* Estilo de cada item na lista VPN */
+.vpn-item {
+    display: flex;
+    color: #ffffff;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 4px;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    width: 100%; /* Garante que cada item ocupe a largura total */
+    gap: 10px; /* Espaçamento entre elementos */
+}
+
+
+#chavename {
+    flex: 0 0 250px; /* Permite ocupar o espaço restante */
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 10px; 
+}
+
+#fileexpiration, #emuso, #dispo, #desatv {
+    flex: 0 0 120px; /* Largura fixa para garantir alinhamento */
+    text-align: center;
+    padding: 5px;
+}
+
+/* Garantir que o nome do usuário tenha um tamanho fixo */
+#usernome, #usernome2 {
+    flex: 0 0 150px; /* Defina a largura fixa para manter o alinhamento */
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px; /* Espaçamento interno */
+    height: 32px; /* Garante altura consistente */
+    display: flex;
+    align-items: center; /* Alinha verticalmente o conteúdo */
+}
+
+/* Container dos botões alinhado à direita */
+.vpn-item .button-container {
+    flex: 0 0 200px; /* Largura fixa para conter os botões */
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 5px; /* Espaçamento entre os botões */
+}
+
+.vpn-item button {
+    flex: 0 0 32px; /* Garantir que todos os botões tenham tamanho fixo */
+    height: 32px; /* Altura fixa do botão */
+    border: none;
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-left: 5px; /* Espaçamento entre os botões */
+}
+
+.vpn-item span {
+    border-radius: 6px;
+}
+
+#fileexpiration {
+    background: rgba(255, 0, 0, 0.144);
+    backdrop-filter: blur(10px);
+}
+
+#emuso {
+    background-color: rgba(230, 87, 31, 0.6);
+    text-shadow: black 0.1em 0.1em 0.2em;
+    text-align: center;
+}
+
+#dispo {
+    text-shadow: black 0.1em 0.1em 0.2em;
+    background-color: rgb(22, 124, 9, 0.6);
+    text-align: center;
+}
+
+#desatv {
+    text-shadow: black 0.1em 0.1em 0.2em;
+    background-color: rgba(128, 128, 128, 0.6);
+    text-align: center;
+}
+
+#obsvpn, #desactive, #down, #down2, #x {
+    width: 32px;
+    height: 32px;
+}
+
+#obsvpn {
+    background: url('./assets/obs.png') no-repeat center center;
+}
+
+#desactive{
+    background: url('./assets/desativar.png') no-repeat center center;
     background-size: contain;
     width: 32px;
     height: 32px;
@@ -673,160 +770,39 @@ button {
     transform: scale(1.2);
 }
 
-.vpn-item {
-    display: flex;
-    justify-content: space-between;
-    color: white;
-    font-weight: 600;
-    /*flex-direction: column;*/
-    
-    align-items: center;
-    padding: 4px;
-    border-bottom: 1px solid #ddd;
-    box-sizing: border-box;
-    margin-right: 10px;
 
-/*  padding: 10px;
-    border-bottom: 1px solid #ddd;*/
-}
-.vpn-item span {
-
-    flex: 1 1 auto;
-    overflow: clip;
-    text-overflow: ellipsis;
-    white-space: nowrap; 
-    text-align: center;
-   
-    padding: 5px;
-    border-radius: 6px;
-    margin-right: 50px;
-    
-    /*margin: 0px 0px 20px;
-    padding: 10px auto;
-    margin-right: 20px;
-    font-size: 16px;
-    border: solid 1px;
-   border-radius: 4px;
-  
-    color: #000000;
-    flex: 1 1 auto; 
-    white-space: pre-wrap;
-    overflow: hidden;
-    padding-right: 20px;*/
-}
-
-#chavename {
-    font-weight: 600;
-    width: 280px;
-    text-align: left;
-}
-
-#fileexpiration{
-    font-weight: 500;
-    background: rgba(255, 0, 0, 0.144);
-    margin-bottom: 5px;
-    backdrop-filter: blur(10px);
-    text-decoration: none;
-    text-shadow: black 0.1em 0.1em 0.2em;
-    text-align: center;
-    width: 50px;
-    margin-bottom: 5px;
-}
-
-
-#emuso {
-    background-color: rgba(230, 87, 31, 0.6);
-    text-shadow: black 0.1em 0.1em 0.2em;
-    text-align: center;
-    width: 100px;
-}
-
-#dispo {
-    text-shadow: black 0.1em 0.1em 0.2em;
-    background-color: rgb(22, 124, 9, 0.6);
-    text-align: center;
-    width: 100px;
-}
-
-#desatv {
-    text-shadow: black 0.1em 0.1em 0.2em;
-    background-color: rgba(128, 128, 128, 0.6);
-    text-align: center;
-    width: 100px;
-}
-
-#usernome {
-    width: 200px;
-    padding-right: 45px;
-}
-
-#usernome2 {
-    width: 200px;
-    padding-right: 103px;
-}
-
-
-#GroupObsModalBox {
-    position: relative;
-    top: -100px;
-    height:
-     500px;
-}
-
-#ObsModalBox {
-    position: relative;
-    top: -100px;
-    height: 500px;
-}
-
-.vpn-item button {
-    margin-left: 10px;
-    padding: 10px 25px;
-    
-}
-#vincula{
-    background: url('./assets/link.png') no-repeat center center;
-    background-size: contain;
-    width: 28px;
-    height: 28px;
-    border-radius: 35px;
-    padding-right: 20px;
-    margin-left: 0px;
-    cursor: pointer;
-}
-#vincula:hover {
+#vpnList .vpn-item button[onclick^="downloadVPN"]:hover {
     transform: scale(1.2);
 }
 
-
-#obsvpn {
-    position: relative;
-    background: url('./assets/obs.png') no-repeat center center;
-    background-size: contain;
-    margin-left: -8px;
-    width: 28px;
-    height: 28px;
-    border: none;
-}
-
-
-#desactive{
-    background: url('./assets/desativar.png') no-repeat center center;
+#vpnList .vpn-item button[onclick^="openVpnObsModal"] {
+    background: url('./assets/download.png') no-repeat center center;
     background-size: contain;
     width: 32px;
     height: 32px;
     border: none;
     border-radius: 6px;
-    padding-right: 20px;
+    padding-right: 32px;
     margin-left: 0px;
     cursor: pointer;
 }
 
 
-#desactive:hover {
+#vpnList .vpn-item button[onclick^="openVpnObsModal"]:hover {
     transform: scale(1.2);
 }
 
+#down {
+    background: url('./assets/download.png') no-repeat center center;
+    background-size: contain;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    padding-right: 32px;
+    margin-left: 0px;
+    cursor: pointer;
+}
 
 #x {
     background-color: red;
@@ -834,12 +810,8 @@ button {
     font-weight: 900;
 }
 
-#x:hover {
-    background-color: rgb(87, 2, 2);
-    transform: scale(1.2);
-   
-    /*padding: 4px 6px;*/
-
+.vpn-item button:hover {
+    transform: scale(1.1);
 }
 
 tr {
