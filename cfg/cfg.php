@@ -47,8 +47,9 @@
         <h2>EXCLUIR EMPRESA</h2>
         <p style="color: orange;">Está ação excluirá todos os registros relacionados ⚠️</p>
         <p>Tem certeza de que deseja excluir esta empresa?</p>
-        <button id="confirm-delete-button" type="button">Sim</button>
-        <button id="cancel-delete-button" type="button">Cancelar</button>
+        <button id="confirm-delete-button" style="background-color: green;
+        width: 80px;" type="button">Sim</button>
+        <button id="cancel-delete-button" style="background-color: red;" type="button">Cancelar</button>
     </div>
 </div>
 </div>
@@ -295,8 +296,9 @@ document.addEventListener("DOMContentLoaded", function() {
         <h2>EXCLUIR USUÁRIO</h2>
         <p style="color: orange;">Está ação excluirá todos os registros relacionados ⚠️</p>
         <p>Tem certeza de que deseja excluir este usuário?</p>
-        <button id="confirm-delete-user-button" type="button">Sim</button>
-        <button id="cancel-delete-user-button" type="button">Cancelar</button>
+        <button id="confirm-delete-user-button" style="background-color: green;
+        width: 80px;" type="button">Sim</button>
+        <button style="background-color: red;" id="cancel-delete-user-button" type="button">Cancelar</button>
     </div>
 </div>
 </div>

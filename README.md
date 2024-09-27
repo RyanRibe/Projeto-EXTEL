@@ -21,14 +21,14 @@ CREATE TABLE `nome_da_empresa` (
   `deactivateddate` varchar(250) DEFAULT NULL,
   `firstdowndate` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 Tabela de Usuários:
 
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(12) NOT NULL,
-  `password` varchar(8) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `typeuser` varchar(45) NOT NULL DEFAULT 'user',
   `enterprise` varchar(45) NOT NULL,
   `lastlogindate` datetime DEFAULT NULL,
@@ -36,9 +36,10 @@ CREATE TABLE `users` (
   `useragent` varchar(255) DEFAULT NULL,
   `last_activity` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status1` enum('online','offline') DEFAULT 'offline',
+  `resetpassword` tinyint(1) DEFAULT '0',
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 (Ao criar um usuário pelo banco se atente em colocar seu tipo, como "admin" ou "user", sendo que o admin pode navegar pelas "enterprise" e o do tipo user apenas na enterprise pré-setada em seu usuário. Pré-set uma enterprise para TODOS os usuários ou gerará erro no programa.)
 
