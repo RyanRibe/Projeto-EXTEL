@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -25,7 +29,6 @@
             <h1>Login</h1>
             
             <?php
-                session_start();
                 if (isset($_SESSION['login_error'])) {
                     echo '<p style="color:red;">' . $_SESSION['login_error'] . '</p>';
                     unset($_SESSION['login_error']); 

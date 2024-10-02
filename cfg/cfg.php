@@ -40,6 +40,21 @@
         </div>
     </div>
 
+<!-- Modal para editar a empresa -->
+<div id="editCompanyModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="closeModal">&times;</span> 
+        <h2>Editar Empresa</h2>
+        <p style="color: orange;">Ao trocar o nome de uma empresa, lembre-se de atualizar o usuário ao qual acessa tal empresa ⚠️</p>
+        <form id="editCompanyForm">
+            <label for="companyName">Nome da Empresa:</label>
+            <input type="text" id="companyName" name="companyName" required>            
+            <button type="submit">Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+
+
 <!-- Modal de confirmação para excluir empresa -->
 <div id="delete-company-modal" class="modal">
     <div class="modal-content">
@@ -53,6 +68,8 @@
     </div>
 </div>
 </div>
+
+
 
 
     <script>
@@ -125,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const li = document.createElement('li');
                 li.textContent = company;
 
-      
+                // Botão de excluir
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = "Excluir ⌫";
                 deleteButton.style.marginLeft = '10px';
@@ -134,12 +151,75 @@ document.addEventListener("DOMContentLoaded", function() {
                     openDeleteModal(company);
                 });
 
+                // Botão de editar
+                const editButton = document.createElement('button');
+                editButton.textContent = "Editar ✎";
+                editButton.style.marginLeft = '10px';
+                editButton.type = "button";
+                editButton.addEventListener('click', function () {
+                    openEditModal(company);
+                });
+
+                li.appendChild(editButton); 
                 li.appendChild(deleteButton);
                 list.appendChild(li);
             });
         })
         .catch(error => console.error('Erro ao carregar as empresas:', error));
 }
+
+
+function openEditModal(companyName) {
+    document.getElementById('companyName').value = companyName;
+    editCompanyModal.style.display = 'block';
+    currentCompanyName = companyName;
+}
+
+let currentCompanyName = null; 
+
+editCompanyForm.addEventListener('submit', (event) => {
+    event.preventDefault(); 
+
+    // Obtém o novo nome da empresa
+    const newCompanyName = document.getElementById('companyName').value;
+
+    // Faz a solicitação para atualizar o nome da empresa
+    fetch('update_company.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'current_company_name': currentCompanyName,
+            'new_company_name': newCompanyName
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            editCompanyModal.style.display = 'none';
+            loadCompanies(); 
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Erro ao atualizar a empresa:', error));
+});
+
+const editCompanyModal = document.getElementById('editCompanyModal');
+const closeModalButton = document.getElementById('closeModal'); 
+
+closeModalButton.addEventListener('click', () => {
+    editCompanyModal.style.display = 'none'; 
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === editCompanyModal) {
+        editCompanyModal.style.display = 'none';
+    }
+});
+
 
 
     loadCompanies();
