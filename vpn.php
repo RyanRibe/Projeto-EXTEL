@@ -197,6 +197,23 @@ $groups = getGroups($enterprise);
         </div>
     </div>
 
+<div id="EditGroupObsModal" class="modal">
+    <div class="modal-content">
+        <span class="close-edit-gpobs" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>
+        <h2>Editar Observação do Grupo</h2>
+        <form id="editGpobsForm">
+    <p>Nome do Grupo:</p>
+    <input type="text" id="editNameGroup" name="editNameGroup" required>
+    <p>Editar Observação:</p>
+    <textarea id="editObsCampo" name="editObsCampo" rows="10" style="resize: none; height: 215px;" maxlength="999" required></textarea>
+    <input type="hidden" id="enterprise" name="enterprise" value="NOME_DA_EMPRESA_AQUI"> <!-- Adicione o nome da empresa -->
+    <button type="submit">Salvar</button>
+</form>
+
+    </div>
+</div>
+
+
     <div id="ObsModal" class="modal">
     <div id="ObsModalBox" class="modal-content">
         <span class="close-gpobsexibe" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>

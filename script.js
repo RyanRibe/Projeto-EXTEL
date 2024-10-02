@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const obsModalContent = document.getElementById('groupObservationsContent');
     const closeObsModal = document.querySelector('.close-gpobsexibe');
     const searchInput = document.getElementById('searchInput');
+    const isAdmin = typeuser === 'admin';
 
     const filterButtons = {
         todas: document.getElementById('todas'),
@@ -157,7 +158,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.success) {
                     const groupObservation = data.groupObservation || 'Sem observações';
                     obsModalContent.innerHTML = `<p>Grupo: ${groupName}</p><p>Observação: ${groupObservation}</p>`;
-                    obsModal.style.display = 'block';
+                    
+                    // Verificar se o usuário é admin
+                     if (isAdmin) {
+                        const editButton = document.createElement('button');
+                        editButton.textContent = "Editar";
+                        editButton.style.marginTop = "10px";
+                        editButton.addEventListener('click', () => {
+                            showEditGroupModal(groupName, groupObservation);
+                            obsModal.style.display = 'none'; // Fecha o modal de visualização
+                        });
+                        obsModalContent.appendChild(editButton);
+                    }
+    
+                    obsModal.style.display = 'block'; // Exibe o modal de observações
                 } else {
                     alert('Erro ao buscar detalhes do grupo: ' + data.error);
                 }
@@ -167,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Erro ao buscar detalhes do grupo. Verifique o console para mais detalhes.');
             });
     }
-
+    
     closeObsModal.addEventListener('click', () => {
         obsModal.style.display = 'none';
     });
@@ -178,6 +192,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    function showEditGroupModal(groupName, groupObservation) {
+        const editModal = document.getElementById('EditGroupObsModal');
+        const groupNameInput = document.getElementById('editNameGroup');  // Corrigido ID
+        const observationInput = document.getElementById('editObsCampo');  // Corrigido ID
+    
+        groupNameInput.value = groupName;
+        observationInput.value = groupObservation;
+    
+        editModal.style.display = 'block'; // Exibe o modal de edição
+    }
+    
     // Atualizar o listener dos botões de observação
     const groupObsButtons = document.querySelectorAll('#GroupObs');
     groupObsButtons.forEach(button => {
@@ -251,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (files.length > 0) {
                 const selectedGroupElement = document.querySelector('input[name="group"]:checked');
         
-                // Verifica se o grupo foi selecionado corretamente
                 if (!selectedGroupElement) {
                     alert('Por favor, selecione um grupo antes de adicionar a VPN.');
                     return;
@@ -259,55 +283,64 @@ document.addEventListener('DOMContentLoaded', function () {
         
                 const selectedGroup = selectedGroupElement.value;
         
-                // Recupera as informações do grupo diretamente do servidor
                 fetch(`server.php?action=getGroupDetails&group=${encodeURIComponent(selectedGroup)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const groupObservation = data.groupObservation;
+                    .then(response => response.text()) // Capture como texto primeiro
+                    .then(text => {
+                        try {
+                            const data = JSON.parse(text); // Tente analisar o JSON
+                            if (data.success) {
+                                const groupObservation = data.groupObservation;
         
-                            if (!groupObservation) {
-                                alert('As informações de expiração e observação do grupo não foram encontradas.');
-                                return;
-                            }
+                                if (!groupObservation) {
+                                    alert('As informações de expiração e observação do grupo não foram encontradas.');
+                                    return;
+                                }
         
-                            // Array para armazenar todas as promessas de upload
-                            const uploadPromises = [];
+                                const uploadPromises = [];
         
-                            // Agora que temos as informações, prossegue com o upload da VPN
-                            Array.from(files).forEach(file => {
-                                const formData = new FormData();
-                                formData.append('vpnFile', file);
-                                formData.append('group', selectedGroup);
-                                formData.append('GroupObservation', groupObservation);
+                                Array.from(files).forEach(file => {
+                                    const formData = new FormData();
+                                    formData.append('vpnFile', file);
+                                    formData.append('group', selectedGroup);
+                                    formData.append('GroupObservation', groupObservation);
         
-                                // Cria uma promessa para cada upload e adiciona ao array
-                                const uploadPromise = fetch('server.php?action=addVPN', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.json());
+                                    const uploadPromise = fetch('server.php?action=addVPN', {
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                    .then(response => response.text()) // Capture como texto
+                                    .then(text => {
+                                        try {
+                                            return JSON.parse(text); // Tente analisar o JSON
+                                        } catch (jsonError) {
+                                            console.error('Erro de análise JSON:', text);
+                                            throw new Error('Erro ao processar resposta do servidor. Consulte o console para detalhes.');
+                                        }
+                                    });
         
-                                uploadPromises.push(uploadPromise);
-                            });
-        
-                            // Usa Promise.all para aguardar a conclusão de todas as requisições
-                            Promise.all(uploadPromises)
-                                .then(results => {
-                                    const errors = results.filter(result => !result.success);
-                                    if (errors.length === 0) {
-                                        alert('Todas as VPNs foram adicionadas com sucesso.');
-                                    } else {
-                                        alert(`Algumas VPNs não foram adicionadas: ${errors.map(e => e.error).join(', ')}`);
-                                    }
-                                    fetchVPNs(); // Atualiza a lista de VPNs após todas as requisições serem concluídas
-                                })
-                                .catch(error => {
-                                    console.error('Erro ao adicionar VPNs:', error);
-                                    alert('Erro ao adicionar VPNs. Verifique o console para mais detalhes.');
+                                    uploadPromises.push(uploadPromise);
                                 });
-                        } else {
-                            alert('Erro ao recuperar informações do grupo: ' + data.error);
+        
+                                Promise.all(uploadPromises)
+                                    .then(results => {
+                                        const errors = results.filter(result => !result.success);
+                                        if (errors.length === 0) {
+                                            alert('Todas as VPNs foram adicionadas com sucesso.');
+                                        } else {
+                                            alert(`Algumas VPNs não foram adicionadas: ${errors.map(e => e.error).join(', ')}`);
+                                        }
+                                        fetchVPNs();
+                                    })
+                                    .catch(error => {
+                                        console.error('Erro ao adicionar VPNs:', error);
+                                        alert('Erro ao adicionar VPNs. Verifique o console para mais detalhes.');
+                                    });
+                            } else {
+                                alert('Erro ao recuperar informações do grupo: ' + data.error);
+                            }
+                        } catch (jsonError) {
+                            console.error('Resposta inesperada do servidor:', text);
+                            alert('Erro inesperado do servidor. Verifique o console para mais detalhes.');
                         }
                     })
                     .catch(error => {
@@ -316,7 +349,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             }
         });
+        
 
+            function submitEditGroupForm(event) {
+                event.preventDefault();
+                
+                const groupName = document.getElementById('editNameGroup').value;
+                const observation = document.getElementById('editObsCampo').value;
+                const originalGroupName = document.getElementById('groupToObs').value;
+                const enterprise = document.getElementById('enterprise').value;
+            
+                fetch('server.php?action=updateGroupObservation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `originalGroupName=${encodeURIComponent(originalGroupName)}&updatedGroupName=${encodeURIComponent(groupName)}&observation=${encodeURIComponent(observation)}&enterprise=${encodeURIComponent(enterprise)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Observação atualizada com sucesso.');
+                        location.reload(); // Recarrega a página para refletir as mudanças
+                    } else {
+                        alert('Erro ao atualizar observação: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao atualizar observação:', error);
+                    alert('Erro ao atualizar observação. Verifique o console para mais detalhes.');
+                });
+            }
+            
+            // Adicione o listener ao botão de salvar no modal de edição
+            document.getElementById('editGpobsForm').addEventListener('submit', submitEditGroupForm);
+            
+        
     currentFilter = 'todas';
 
     fetchVPNs();   

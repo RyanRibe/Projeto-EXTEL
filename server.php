@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -327,6 +328,40 @@ function handleGetGroupDetails($enterprise) {
     }
 }
 
+// Função para atualizar o grupo e observação
+function updateGroupObservation($pdo, $enterprise) {
+    // Validação dos dados enviados via POST
+    $originalGroupName = isset($_POST['originalGroupName']) ? $_POST['originalGroupName'] : null;
+    $updatedGroupName = isset($_POST['updatedGroupName']) ? $_POST['updatedGroupName'] : null;
+    $observation = isset($_POST['observation']) ? $_POST['observation'] : null;
+
+    if (!$originalGroupName || !$updatedGroupName || !$observation) {
+        echo json_encode(['success' => false, 'error' => 'Dados do grupo incompletos']);
+        return;
+    }
+
+    try {
+        // Nome da tabela baseada na empresa
+        $enterprise = sanitizeTableName($enterprise);
+
+        // Atualiza o nome do grupo e a observação no banco de dados
+        $stmt = $pdo->prepare("UPDATE {$enterprise} SET `group` = :updatedGroupName, GroupObservation = :observation WHERE `group` = :originalGroupName");
+        $stmt->bindParam(':updatedGroupName', $updatedGroupName);
+        $stmt->bindParam(':observation', $observation);
+        $stmt->bindParam(':originalGroupName', $originalGroupName);
+        $stmt->execute();
+
+        echo json_encode(['success' => true, 'message' => 'Grupo e observação atualizados com sucesso']);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'error' => 'Erro ao atualizar o grupo: ' . $e->getMessage()]);
+    }
+}
+
+// Manipulação da ação no server.php
+if (isset($_GET['action']) && $_GET['action'] === 'updateGroupObservation') {
+    updateGroupObservation($pdo, $_POST['enterprise']);
+}
+
 
 
 switch ($action) {
@@ -521,6 +556,8 @@ function handleAddVPN($enterprise) {
         echo json_encode(['error' => 'Erro ao salvar arquivo VPN']);
         return;
     }
+
+    ob_end_clean();
 
     try {
         $enterprise = sanitizeTableName($enterprise);
