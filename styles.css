@@ -560,6 +560,35 @@ button {
   
 }
 
+#GroupObsModal .modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -100px;
+}
+
+#EditGroupObsModal textarea {
+    margin: 15px 0;
+    width: 450px;
+    height: 100px
+  
+}
+
+#EditGroupObsModal-modal, #VpnObsModalBox, #GroupObsModalBox {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: -100px;
+}
+
+#VpnObsModal textarea {
+    margin: 15px 0;
+    width: 450px;
+    height: 100px
+  
+}
+
+
 
 .modal span, .close, .close-link {
     height: 25px;

@@ -153,7 +153,7 @@ $groups = getGroups($enterprise);
             color: red;
             font-weight: 800;
             ">&times;</span>
-            <h2>CONFIRMAÇÃO DE EXCLUSÃO</h2>
+            <h2>CONFIRMAR EXCLUSÃO ⚠️</h2>
             <form id="deleteForm">
                 <p>Digite a senha para confirmar a exclusão:</p>
                 <input type="password" id="password" name="password" required>
@@ -198,9 +198,9 @@ $groups = getGroups($enterprise);
     </div>
 
 <div id="EditGroupObsModal" class="modal">
-    <div class="modal-content">
+    <div id="EditGroupObsModal-modal" class="modal-content">
         <span class="close-edit-gpobs" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>
-        <h2>Editar Observação do Grupo</h2>
+        <h2>EDITAR GRUPO</h2>
             <form id="editGpobsForm">
                 <input type="hidden" id="originalGroupName" name="originalGroupName"> <!-- Campo oculto -->
                 <p>Nome do Grupo:</p>
@@ -215,11 +215,11 @@ $groups = getGroups($enterprise);
 <div id="deleteGroupModal" class="modal">
     <div class="modal-content">
         <span class="close-delete-modal" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>
-        <h2>Confirmar Exclusão</h2>
+        <h2>CONFIRMAR EXCLUSÃO ⚠️</h2>
         <p>Você tem certeza que deseja excluir este grupo?</p>
         <input type="hidden" id="groupNameToDelete" name="groupNameToDelete"> <!-- Campo oculto -->
-        <button id="confirmDeleteBtn" style="background-color: red; color: white;">Excluir</button>
-        <button id="cancelDeleteBtn">Cancelar</button>
+        <button id="confirmDeleteBtn" style="background-color: green;">Confirmar</button>
+        <button id="cancelDeleteBtn" style="background-color: red;">Cancelar</button>
     </div>
 </div>
 

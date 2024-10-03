@@ -382,16 +382,45 @@ function deleteGroup($groupName) {
     $enterprise = $_SESSION['enterprise'];
 
     try {
-       
+        // Saneia o nome da tabela da empresa
         $tableName = "`" . preg_replace('/[^a-zA-Z0-9_]/', '', $enterprise) . "`";
 
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM $tableName WHERE `group` = :groupName");
+        // Consulta para obter todas as VPNs associadas ao grupo
+        $stmt = $pdo->prepare("SELECT filename FROM $tableName WHERE `group` = :groupName");
         $stmt->execute([':groupName' => $groupName]);
+        $vpnFiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($stmt->fetchColumn() === 0) {
-            return ['success' => false, 'error' => 'Grupo não encontrado.'];
+        // Se o grupo não tiver VPNs associadas, retorna erro
+        if (empty($vpnFiles)) {
+            return ['success' => false, 'error' => 'Grupo não encontrado ou não contém VPNs.'];
         }
 
+        // Caminho do diretório de upload baseado na empresa
+        $uploadDir = 'uploads/' . $enterprise . '/';
+
+        // Exclui todos os arquivos VPN associados ao grupo
+        foreach ($vpnFiles as $vpn) {
+            $fileName = $vpn['filename'];
+
+            // Verifica se o nome do arquivo não está vazio
+            if (!empty($fileName)) {
+                $filePath = $uploadDir . $fileName;
+
+                // Verifica se o caminho é um arquivo antes de tentar excluir
+                if (is_file($filePath)) {  // Verifica se é um arquivo válido
+                    if (!unlink($filePath)) {
+                        return ['success' => false, 'error' => 'Erro ao excluir arquivo VPN: ' . $fileName];
+                    }
+                } else {
+                    return ['success' => false, 'error' => 'Erro ao excluir: ' . $fileName . ' não é um arquivo válido.'];
+                }
+            } else {
+                // Ignorar arquivos com nomes vazios ou inválidos
+                continue;
+            }
+        }
+
+        // Exclui as entradas do grupo no banco de dados
         $stmt = $pdo->prepare("DELETE FROM $tableName WHERE `group` = :groupName");
         $stmt->execute([':groupName' => $groupName]);
 
@@ -400,6 +429,8 @@ function deleteGroup($groupName) {
         return ['success' => false, 'error' => $e->getMessage()];
     }
 }
+
+
 
 // Verifica se a requisição é POST e contém a ação de exclusão
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'deleteGroup') {
@@ -412,6 +443,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     echo json_encode($response);
     exit;
 }
+
 
 switch ($action) {
     case 'addVPN':
@@ -679,25 +711,56 @@ function handleDeleteVPN($enterprise) {
     }
 
     try {
-        $adminPassword = getAdminPassword(); // Obter a senha do admin do banco de dados
+        // Obtém a senha do administrador
+        $adminPassword = getAdminPassword();
 
+        // Verifica se a senha fornecida é válida
         if ($password !== $adminPassword) {
             http_response_code(403); // Forbidden
             echo json_encode(['error' => 'Senha inválida']);
             return;
         }
 
+        // Saneia o nome da tabela da empresa
         $enterprise = sanitizeTableName($enterprise);
+
+        // Consulta o arquivo a ser excluído
+        $stmt = $pdo->prepare("SELECT filename FROM {$enterprise} WHERE id = :id");
+        $stmt->bindParam(':id', $vpnId);
+        $stmt->execute();
+        $vpn = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$vpn) {
+            http_response_code(404); // VPN não encontrada
+            echo json_encode(['error' => 'VPN não encontrada']);
+            return;
+        }
+
+        // Caminho do arquivo VPN
+        $filePath = 'uploads/' . $enterprise . '/' . $vpn['filename'];
+
+        // Exclui o arquivo do diretório, se existir
+        if (file_exists($filePath)) {
+            if (!unlink($filePath)) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Erro ao excluir o arquivo VPN']);
+                return;
+            }
+        }
+
+        // Exclui o registro da VPN no banco de dados
         $stmt = $pdo->prepare("DELETE FROM {$enterprise} WHERE id = :id");
         $stmt->bindParam(':id', $vpnId);
         $stmt->execute();
 
         echo json_encode(['success' => true]);
+
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Erro ao excluir VPN: ' . $e->getMessage()]);
     }
 }
+
 
 function handleDownloadVPN() {
     global $pdo;

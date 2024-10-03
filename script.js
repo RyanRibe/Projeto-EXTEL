@@ -179,20 +179,26 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify({ groupName }),
             headers: { 'Content-Type': 'application/json' }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Grupo excluído com sucesso.');
+        .then(response => response.text())  // Mude para .text() para capturar tudo
+.then(data => {
+    try {
+        let jsonData = JSON.parse(data);  // Tenta converter para JSON
+        if (jsonData.success) {
+            alert('Grupo excluído com sucesso.');
                 location.reload(); // Recarrega a página após a exclusão
             } else {
-                alert('Erro ao excluir o grupo: ' + data.error);
+                alert('Erro ao excluir o grupo: ' + jsonData.error);
             }
-        })
-        .catch(error => {
-            console.error('Erro ao excluir o grupo:', error);
-            alert('Erro ao excluir o grupo. Verifique o console para mais detalhes.');
-        });
-    }
+        } catch (e) {
+            console.error('Erro ao processar resposta: ', data);  // Mostra resposta completa
+            alert('Erro inesperado, verifique o console.');
+        }
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+        alert('Erro ao excluir o grupo. Verifique o console para mais detalhes.');
+    });
+}
     
     
     
@@ -207,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Verificar se o usuário é admin
                      if (isAdmin) {
                         const editButton = document.createElement('button');
-                        editButton.textContent = "Editar";
+                        editButton.textContent = "Editar ✎";
                         editButton.style.marginTop = "10px";
                         editButton.addEventListener('click', () => {
                             showEditGroupModal(groupName, groupObservation);
@@ -215,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
 
                         const deleteButton = document.createElement('button');
-                        deleteButton.textContent = "Excluir";
+                        deleteButton.textContent = "Excluir ⌫";
                         deleteButton.style.marginTop = "10px";
                         deleteButton.style.backgroundColor = "red";
                         deleteButton.style.color = "white";
@@ -410,8 +416,12 @@ document.addEventListener('DOMContentLoaded', function () {
             originalGroupInput.value = groupName; 
         
             editModal.style.display = 'block'; 
+
         }
-                
+
+        document.querySelector('.close-edit-gpobs').addEventListener('click', () => {
+            EditGroupObsModal.style.display = 'none';
+        });  
 
         function submitEditGroupForm(event) {
             event.preventDefault(); 
