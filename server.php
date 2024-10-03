@@ -892,9 +892,11 @@ function handleDeactivateVPN($enterprise) {
             $to = 'adryanrybeiro123@gmail.com'; 
             $subject = 'Desativar VPN ' . $filenameWithoutExtension . ' - ' . $enterprise;
 
+            $username = $_SESSION['username'];
+    
             $message = $deactivateAdUser ?
-                "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\". Também foi solicitado desativar o usuário do AD." :
-                "Foi solicitado a desativação da VPN da empresa \"$enterprise\" chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\".";
+                "Foi solicitado por \"$username\" a desativação da VPN da empresa \"$enterprise\", chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\". Também foi solicitado desativar o usuário do AD." :
+                "Foi solicitado por \"$username\" a desativação da VPN da empresa \"$enterprise\", chave \"" . $filenameWithoutExtension . "\" vinculada ao usuário \"" . $vpn['user_name'] . "\".";
 
             error_log('Mensagem de e-mail: ' . $message);
 
@@ -910,7 +912,7 @@ function handleDeactivateVPN($enterprise) {
                 $mail->Port = 465;
 
                 $mail->CharSet = 'UTF-8';
-                $mail->setFrom('no-reply@extel.com', 'Extel-Bot');
+                $mail->setFrom('no-reply@extel.com', $enterprise);
                 $mail->addAddress($to);
                 $mail->Subject = $subject;
                 $mail->Body = $message;
