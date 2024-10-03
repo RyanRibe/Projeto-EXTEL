@@ -150,6 +150,51 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchTerm = searchInput.value.toLowerCase();
         renderVPNList(searchTerm);
     });
+
+    function showDeleteGroupModal(groupName) {
+        const deleteModal = document.getElementById('deleteGroupModal');
+        document.getElementById('groupNameToDelete').value = groupName;
+    
+        deleteModal.style.display = 'block'; // Exibe o modal de confirmação
+    
+        // Adiciona o evento de confirmação da exclusão
+        document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteGroup);
+    
+        // Fechar o modal ao clicar no botão cancelar
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+        });
+        
+        // Fechar modal ao clicar no "x"
+        document.querySelector('.close-delete-modal').addEventListener('click', () => {
+            deleteModal.style.display = 'none';
+        });
+    }
+
+    function confirmDeleteGroup() {
+        const groupName = document.getElementById('groupNameToDelete').value;
+    
+        fetch('server.php?action=deleteGroup', {
+            method: 'POST',
+            body: JSON.stringify({ groupName }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Grupo excluído com sucesso.');
+                location.reload(); // Recarrega a página após a exclusão
+            } else {
+                alert('Erro ao excluir o grupo: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao excluir o grupo:', error);
+            alert('Erro ao excluir o grupo. Verifique o console para mais detalhes.');
+        });
+    }
+    
+    
     
     function showGroupObservations(groupName) {
         fetch(`server.php?action=getGroupDetails&group=${encodeURIComponent(groupName)}`)
@@ -168,7 +213,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             showEditGroupModal(groupName, groupObservation);
                             obsModal.style.display = 'none'; // Fecha o modal de visualização
                         });
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = "Excluir";
+                        deleteButton.style.marginTop = "10px";
+                        deleteButton.style.backgroundColor = "red";
+                        deleteButton.style.color = "white";
+                        deleteButton.addEventListener('click', () => {
+                            showDeleteGroupModal(groupName);
+                            obsModal.style.display = 'none'; // Fecha o modal de visualização
+                        });
+    
                         obsModalContent.appendChild(editButton);
+                        obsModalContent.appendChild(deleteButton);
+
                     }
     
                     obsModal.style.display = 'block'; // Exibe o modal de observações
@@ -192,16 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    function showEditGroupModal(groupName, groupObservation) {
-        const editModal = document.getElementById('EditGroupObsModal');
-        const groupNameInput = document.getElementById('editNameGroup');  // Corrigido ID
-        const observationInput = document.getElementById('editObsCampo');  // Corrigido ID
     
-        groupNameInput.value = groupName;
-        observationInput.value = groupObservation;
-    
-        editModal.style.display = 'block'; // Exibe o modal de edição
-    }
     
     // Atualizar o listener dos botões de observação
     const groupObsButtons = document.querySelectorAll('#GroupObs');
@@ -349,40 +398,61 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             }
         });
+
+        function showEditGroupModal(groupName, groupObservation) {
+            const editModal = document.getElementById('EditGroupObsModal');
+            const groupNameInput = document.getElementById('editNameGroup');
+            const observationInput = document.getElementById('editObsCampo');
+            const originalGroupInput = document.getElementById('originalGroupName'); 
+
+            groupNameInput.value = groupName;
+            observationInput.value = groupObservation;
+            originalGroupInput.value = groupName; 
+        
+            editModal.style.display = 'block'; 
+        }
+                
+
+        function submitEditGroupForm(event) {
+            event.preventDefault(); 
         
 
-            function submitEditGroupForm(event) {
-                event.preventDefault();
-                
-                const groupName = document.getElementById('editNameGroup').value;
-                const observation = document.getElementById('editObsCampo').value;
-                const originalGroupName = document.getElementById('groupToObs').value;
-                const enterprise = document.getElementById('enterprise').value;
-            
-                fetch('server.php?action=updateGroupObservation', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `originalGroupName=${encodeURIComponent(originalGroupName)}&updatedGroupName=${encodeURIComponent(groupName)}&observation=${encodeURIComponent(observation)}&enterprise=${encodeURIComponent(enterprise)}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Observação atualizada com sucesso.');
-                        location.reload(); // Recarrega a página para refletir as mudanças
-                    } else {
-                        alert('Erro ao atualizar observação: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao atualizar observação:', error);
-                    alert('Erro ao atualizar observação. Verifique o console para mais detalhes.');
-                });
+            const updatedGroupName = document.getElementById('editNameGroup').value;
+            const observation = document.getElementById('editObsCampo').value;
+            const originalGroupName = document.getElementById('originalGroupName').value;
+        
+            if (!updatedGroupName || !observation) {
+                alert('Preencha todos os campos antes de salvar.');
+                return;
             }
-            
-            // Adicione o listener ao botão de salvar no modal de edição
-            document.getElementById('editGpobsForm').addEventListener('submit', submitEditGroupForm);
+
+            fetch('server.php?action=updateGroupObservation', {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'updateGroupObservation', 
+                    originalGroupName, 
+                    updatedGroupName, 
+                    observation
+                }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Observação atualizada com sucesso.');
+                    location.reload(); // Recarrega a página para refletir as alterações
+                } else {
+                    alert('Erro ao atualizar observação: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar observação:', error);
+                alert('Erro ao atualizar observação. Verifique o console para mais detalhes.');
+            });
+        }
+
+        document.getElementById('editGpobsForm').addEventListener('submit', submitEditGroupForm);
+        
             
         
     currentFilter = 'todas';

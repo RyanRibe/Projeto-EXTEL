@@ -201,17 +201,28 @@ $groups = getGroups($enterprise);
     <div class="modal-content">
         <span class="close-edit-gpobs" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>
         <h2>Editar Observação do Grupo</h2>
-        <form id="editGpobsForm">
-    <p>Nome do Grupo:</p>
-    <input type="text" id="editNameGroup" name="editNameGroup" required>
-    <p>Editar Observação:</p>
-    <textarea id="editObsCampo" name="editObsCampo" rows="10" style="resize: none; height: 215px;" maxlength="999" required></textarea>
-    <input type="hidden" id="enterprise" name="enterprise" value="NOME_DA_EMPRESA_AQUI"> <!-- Adicione o nome da empresa -->
-    <button type="submit">Salvar</button>
-</form>
-
+            <form id="editGpobsForm">
+                <input type="hidden" id="originalGroupName" name="originalGroupName"> <!-- Campo oculto -->
+                <p>Nome do Grupo:</p>
+                <input type="text" id="editNameGroup" name="editNameGroup" required>
+                <p>Editar Observação:</p>
+                <textarea id="editObsCampo" name="editObsCampo" rows="10" style="resize: none; height: 215px;" maxlength="999" required></textarea>
+                <button type="submit">Salvar</button>
+            </form>
     </div>
 </div>
+
+<div id="deleteGroupModal" class="modal">
+    <div class="modal-content">
+        <span class="close-delete-modal" style="cursor: pointer; color: red; font-weight: 800;">&times;</span>
+        <h2>Confirmar Exclusão</h2>
+        <p>Você tem certeza que deseja excluir este grupo?</p>
+        <input type="hidden" id="groupNameToDelete" name="groupNameToDelete"> <!-- Campo oculto -->
+        <button id="confirmDeleteBtn" style="background-color: red; color: white;">Excluir</button>
+        <button id="cancelDeleteBtn">Cancelar</button>
+    </div>
+</div>
+
 
 
     <div id="ObsModal" class="modal">

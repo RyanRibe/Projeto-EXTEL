@@ -328,41 +328,90 @@ function handleGetGroupDetails($enterprise) {
     }
 }
 
-// Função para atualizar o grupo e observação
-function updateGroupObservation($pdo, $enterprise) {
-    // Validação dos dados enviados via POST
-    $originalGroupName = isset($_POST['originalGroupName']) ? $_POST['originalGroupName'] : null;
-    $updatedGroupName = isset($_POST['updatedGroupName']) ? $_POST['updatedGroupName'] : null;
-    $observation = isset($_POST['observation']) ? $_POST['observation'] : null;
+function updateGroupObservation($originalGroupName, $updatedGroupName, $observation) {
+    global $pdo;
 
-    if (!$originalGroupName || !$updatedGroupName || !$observation) {
-        echo json_encode(['success' => false, 'error' => 'Dados do grupo incompletos']);
-        return;
-    }
+    $enterprise = $_SESSION['enterprise'];
 
     try {
-        // Nome da tabela baseada na empresa
-        $enterprise = sanitizeTableName($enterprise);
 
-        // Atualiza o nome do grupo e a observação no banco de dados
-        $stmt = $pdo->prepare("UPDATE {$enterprise} SET `group` = :updatedGroupName, GroupObservation = :observation WHERE `group` = :originalGroupName");
-        $stmt->bindParam(':updatedGroupName', $updatedGroupName);
-        $stmt->bindParam(':observation', $observation);
-        $stmt->bindParam(':originalGroupName', $originalGroupName);
-        $stmt->execute();
+        $tableName = "`" . preg_replace('/[^a-zA-Z0-9_]/', '', $enterprise) . "`";
 
-        echo json_encode(['success' => true, 'message' => 'Grupo e observação atualizados com sucesso']);
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM $tableName WHERE `group` = :updatedGroupName");
+        $stmt->execute([':updatedGroupName' => $updatedGroupName]);
+
+        if ($stmt->fetchColumn() > 0 && $originalGroupName !== $updatedGroupName) {
+
+            return ['success' => false, 'error' => 'O nome do grupo já existe.'];
+        }
+
+        $stmt = $pdo->prepare("UPDATE $tableName SET `group` = :updatedGroupName, `GroupObservation` = :observation 
+                               WHERE `group` = :originalGroupName");
+        $stmt->execute([
+            ':updatedGroupName' => $updatedGroupName,
+            ':observation' => $observation,
+            ':originalGroupName' => $originalGroupName
+        ]);
+
+        return ['success' => true];
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'error' => 'Erro ao atualizar o grupo: ' . $e->getMessage()]);
+        return ['success' => false, 'error' => $e->getMessage()];
     }
 }
 
-// Manipulação da ação no server.php
-if (isset($_GET['action']) && $_GET['action'] === 'updateGroupObservation') {
-    updateGroupObservation($pdo, $_POST['enterprise']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (isset($data['action']) && $data['action'] === 'updateGroupObservation') {
+        $originalGroupName = $data['originalGroupName'];
+        $updatedGroupName = $data['updatedGroupName'];
+        $observation = $data['observation'];
+
+        $response = updateGroupObservation($originalGroupName, $updatedGroupName, $observation);
+
+        echo json_encode($response);
+        exit;
+    }
 }
 
+function deleteGroup($groupName) {
+    global $pdo;
 
+    // Pegue a variável enterprise da sessão
+    $enterprise = $_SESSION['enterprise'];
+
+    try {
+       
+        $tableName = "`" . preg_replace('/[^a-zA-Z0-9_]/', '', $enterprise) . "`";
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM $tableName WHERE `group` = :groupName");
+        $stmt->execute([':groupName' => $groupName]);
+
+        if ($stmt->fetchColumn() === 0) {
+            return ['success' => false, 'error' => 'Grupo não encontrado.'];
+        }
+
+        $stmt = $pdo->prepare("DELETE FROM $tableName WHERE `group` = :groupName");
+        $stmt->execute([':groupName' => $groupName]);
+
+        return ['success' => true];
+    } catch (PDOException $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+// Verifica se a requisição é POST e contém a ação de exclusão
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'deleteGroup') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $groupName = $data['groupName'];
+
+    // Chama a função de exclusão
+    $response = deleteGroup($groupName);
+
+    echo json_encode($response);
+    exit;
+}
 
 switch ($action) {
     case 'addVPN':
@@ -535,10 +584,9 @@ function handleAddVPN($enterprise) {
         return;
     }
 
-    // Define o diretório de upload baseado na empresa selecionada
+   
     $uploadDir = 'uploads/' . $enterprise . '/';
 
-    // Cria o diretório da empresa se não existir
     if (!is_dir($uploadDir)) {
         if (!mkdir($uploadDir, 0777, true)) {
             http_response_code(500);
@@ -547,10 +595,8 @@ function handleAddVPN($enterprise) {
         }
     }
 
-    // Define o caminho completo do arquivo para o upload
     $destPath = $uploadDir . basename($fileName);
 
-    // Move o arquivo para o diretório da empresa
     if (!move_uploaded_file($filePath, $destPath)) {
         http_response_code(500);
         echo json_encode(['error' => 'Erro ao salvar arquivo VPN']);
