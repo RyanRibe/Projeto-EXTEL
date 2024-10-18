@@ -11,8 +11,15 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Recebe o nome da empresa e substitui espaços por "_"
-        $companyName = str_replace(' ', '_', $_POST['company_name']);
+        
+        $companyName = $_POST['company_name'];
+
+        if (!preg_match('/[a-zA-Z]/', $companyName)) {
+            echo json_encode(['success' => false, 'message' => 'O nome da empresa deve conter pelo menos uma letra.']);
+            exit;
+        }
+
+        $companyName = preg_replace('/[^a-zA-Z0-9_]/', '_', $_POST['company_name']);
         
         // Cria a tabela com o nome da empresa
         $sql = "CREATE TABLE `$companyName` (

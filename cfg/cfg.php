@@ -31,10 +31,10 @@
             <span class="close">&times;</span>
             <h2>CRIAR NOVA EMPRESA</h2>
             <form id="add-company-form">
-                <p style="color: orange;"> O nome deve conter letras e números ⚠️ </p>
+                <p style="color: orange;"> O deve conter letras ⚠️ </p>
                 <label for="company_name">Nome da Empresa:</label>
                 
-                <input type="text" id="company_name" name="company_name" required>
+                <input maxlength="45" type="text" id="company_name" name="company_name" required>
                 <button type="submit">Confirmar</button>
             </form>
         </div>
@@ -45,10 +45,10 @@
     <div class="modal-content">
         <span class="close-button" id="closeModal">&times;</span> 
         <h2>Editar Empresa</h2>
-        <p style="color: orange;">Ao trocar o nome de uma empresa, lembre-se de atualizar o usuário ao qual acessa tal empresa ⚠️</p>
+        <!--<p style="color: orange;">Ao trocar o nome de uma empresa, lembre-se de atualizar o usuário ao qual acessa tal empresa ⚠️</p>-->
         <form id="editCompanyForm">
             <label for="companyName">Nome da Empresa:</label>
-            <input type="text" id="companyName" name="companyName" required>            
+            <input maxlength="45" type="text" id="companyName" name="companyName" required>            
             <button type="submit">Salvar Alterações</button>
         </form>
     </div>
@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 
 
+
 function openEditModal(companyName) {
     document.getElementById('companyName').value = companyName;
     editCompanyModal.style.display = 'block';
@@ -200,6 +201,7 @@ editCompanyForm.addEventListener('submit', (event) => {
             alert(data.message);
             editCompanyModal.style.display = 'none';
             loadCompanies(); 
+            location.reload();
         } else {
             alert(data.message);
         }
@@ -223,7 +225,7 @@ window.addEventListener('click', (event) => {
 
 
     loadCompanies();
-
+ 
 
     const deleteCompanyModal = document.getElementById("delete-company-modal");
     const closeDeleteModal = document.getElementsByClassName("close-delete-modal")[0];

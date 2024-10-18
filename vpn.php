@@ -70,7 +70,7 @@ $groups = getGroups($enterprise);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>VPN - <?php echo htmlspecialchars(strtoupper($enterprise)); ?></title>
+    <title>VPN - <?php echo htmlspecialchars(strtoupper(str_replace('_', ' ', $enterprise))); ?></title>
     <link rel="icon" type="image/x-icon" href="./assets/favico.png">
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -277,7 +277,7 @@ $groups = getGroups($enterprise);
     <div id="userModal-content" class="modal-content">
         <span class="closeUsersBtn">&times;</span>
         <h2>Usuários Conectados</h2>
-        <table id="userTable">
+        <table style="color: white;" id="userTable">
             <thead>
                 <tr>
                     <th>Usuário</th>

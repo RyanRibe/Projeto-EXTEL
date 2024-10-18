@@ -66,13 +66,45 @@ function updateTablesList($pdo) {
     $_SESSION['tables'] = $tables; 
 }
 
-if (isset($_GET['action']) && $_GET['action'] === 'backToVpn') {
-    // Executar a função para atualizar a lista de tabelas
-    updateTablesList($pdo);
+function reloadSessionFromDatabase($pdo, $userId) {
+    try {
+        $stmt = $pdo->prepare("SELECT id, typeuser, enterprise FROM users WHERE id = :id");
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+        
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Redirecionar para a página VPN após atualizar a lista de tabelas
-    header('Location: /vpn');
-    exit();
+        if ($user) {
+     
+            $_SESSION['enterprise'] = $user['enterprise'];
+            $_SESSION['typeuser'] = $user['typeuser'];
+            $_SESSION['id'] = $user['id'];
+        } else {
+
+            session_destroy();
+            header('Location: login.php');
+            exit();
+        }
+    } catch (PDOException $e) {
+        echo "Erro ao carregar a sessão: " . $e->getMessage();
+        exit();
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'backToVpn') {
+    if (isset($_SESSION['id'])) {
+        $userId = $_SESSION['id'];
+
+        reloadSessionFromDatabase($pdo, $userId);
+
+        updateTablesList($pdo, $_SESSION['enterprise']);
+
+        header('Location: /vpn');
+        exit();
+    } else {
+        header('Location: /login');
+        exit();
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
