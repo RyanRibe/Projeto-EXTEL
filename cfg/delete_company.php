@@ -16,21 +16,25 @@ try {
     $pdo = new PDO("mysql:host=$dbHost;port=$dbPort;dbname=$dbName", $dbUser, $dbPass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
     $companyName = $_POST['company_name'];
-
 
     if (preg_match('/^[a-zA-Z0-9_]+$/', $companyName)) {
 
-        $query = "DROP TABLE `vpns`.`$companyName`";
-        
-        $stmt = $pdo->prepare($query);
-        
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Empresa excluída com sucesso.']);
+        $deleteUsersQuery = "DELETE FROM users WHERE typeuser = 'user' AND enterprise = :company_name";
+        $deleteUsersStmt = $pdo->prepare($deleteUsersQuery);
+        $deleteUsersStmt->bindParam(':company_name', $companyName);
+        $deleteUsersSuccess = $deleteUsersStmt->execute();
+
+        $dropTableQuery = "DROP TABLE IF EXISTS `vpns`.`$companyName`";
+        $dropTableStmt = $pdo->prepare($dropTableQuery);
+        $dropTableSuccess = $dropTableStmt->execute();
+
+        if ($deleteUsersSuccess && $dropTableSuccess) {
+            echo json_encode(['success' => true, 'message' => 'Empresa e usuários vinculados excluídos com sucesso.']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Erro ao excluir a empresa.']);
+            echo json_encode(['success' => false, 'message' => 'Erro ao excluir a empresa ou os usuários vinculados.']);
         }
+
     } else {
         echo json_encode(['success' => false, 'message' => 'Nome da empresa inválido.']);
     }

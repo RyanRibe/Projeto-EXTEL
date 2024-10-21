@@ -279,6 +279,7 @@ window.addEventListener('click', (event) => {
                 alert(data.message);
                 deleteCompanyModal.style.display = "none";
                 loadCompanies(); 
+                location.reload();
             } else {
                 alert(data.message);
             }

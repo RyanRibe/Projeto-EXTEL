@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_password'], $
                 $updateStmt->execute();
 
                 $success = "Senha atualizada com sucesso. Redirecionando em 3 segundos...";
-                header('refresh:3;url=/vpn'); // Redirect to /vpn after 3 seconds
+                header('refresh:1;url=/vpn');
                 exit();
             } else {
                 $error = "A senha atual está incorreta.";
@@ -81,10 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_password'], $
 </head>
 <body>
     <h2 class="modal">Redefinir Senha</h2>
-    <?php if ($error) { echo "<p style='color:red;'>$error</p>"; } ?>
-    <?php if ($success) { echo "<p style='color:green;'>$success</p>"; } ?>
+
     <form method="POST" class="modal-content">
-        <label style='display: flex;'for="current_password">Senha Atual:</label>
+        
+        <?php if ($error) { echo "<p style='color:red; text-align:center;'>$error</p>"; } ?>
+        <?php if ($success) { echo "<p style='color:green; text-align:center;'>$success</p>"; } ?>
+
+        <label style='display: flex;' for="current_password">Senha Atual:</label>
         <div id="icon1" onclick="showHide()"></div>
         <input style='margin-bottom: 30px;' maxlength="8" type="password" id="current_password" name="current_password" required>
         
@@ -96,6 +99,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_password'], $
     </form>
 
     <script src="icoeye-reset.js"></script>
-
 </body>
 </html>

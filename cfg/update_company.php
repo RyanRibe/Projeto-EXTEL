@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $renameTableSQL = "RENAME TABLE `$currentCompanyName` TO `$newCompanyName`";
         $pdo->exec($renameTableSQL);
         
-        //Atualiza tanmbém o user da empresa
+        //Atualiza também o user da empresa
         $updateUsersSQL = "UPDATE `users` SET `enterprise` = :newCompanyName WHERE `enterprise` = :currentCompanyName";
         $stmt = $pdo->prepare($updateUsersSQL);
         $stmt->execute(['newCompanyName' => $newCompanyName, 'currentCompanyName' => $currentCompanyName]);
