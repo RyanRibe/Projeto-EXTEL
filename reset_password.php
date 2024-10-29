@@ -89,11 +89,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['current_password'], $
 
         <label style='display: flex;' for="current_password">Senha Atual:</label>
         <div id="icon1" onclick="showHide()"></div>
-        <input style='margin-bottom: 30px;' maxlength="8" type="password" id="current_password" name="current_password" required>
+        <input style='margin-bottom: 30px;' autocomplete="off" maxlength="25" type="password" id="current_password" name="current_password" required>
         
         <label style='display: flex;' for="new_password">Nova Senha:</label>
         <div id="icon" onclick="showHide()"></div>
-        <input style='margin-right: 120px;'maxlength="8" type="password" id="new_password" name="new_password" required>
+        <input style='margin-right: 120px;' autocomplete="off" maxlength="25" type="password" id="new_password" name="new_password" required>
 
         <button type="submit">Atualizar Senha</button>
     </form>

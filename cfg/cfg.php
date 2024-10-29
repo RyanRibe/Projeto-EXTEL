@@ -316,10 +316,10 @@ window.addEventListener('click', (event) => {
         <h2>CRIAR NOVO USUÁRIO</h2>
         <form id="add-user-form">
             <label for="username">Nome de Usuário:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" maxlength="25" autocomplete="off" name="username" required>
             
             <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" maxlength="25" autocomplete="off" id="password" name="password" required>
 
             <label for="typeuser">Tipo de Usuário:</label>
             <select id="typeuser" name="typeuser" required>
@@ -346,10 +346,10 @@ window.addEventListener('click', (event) => {
         <h2>EDITAR USUÁRIO</h2>
         <form id="edit-user-form">
             <label for="edit-username">Nome de Usuário:</label>
-            <input type="text" id="edit-username" name="edit-username" required>
+            <input type="text" id="edit-username" maxlength="25" autocomplete="off" name="edit-username" required>
             
             <label for="edit-password">Senha:</label>
-            <input type="password" id="edit-password" name="edit-password">
+            <input type="password" maxlength="25" autocomplete="off" id="edit-password" name="edit-password">
 
             <label for="edit-typeuser">Tipo de Usuário:</label>
             <select id="edit-typeuser" name="edit-typeuser" required>

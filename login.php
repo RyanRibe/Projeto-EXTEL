@@ -35,9 +35,9 @@ session_start();
                 }
                 ?>
             
-            <input placeholder="Usuário" autocomplete="off"  type="text" id="username" name="username" required>
+            <input placeholder="Usuário" autocomplete="off" maxlength="25" type="text" id="username" name="username" required>
       
-            <input placeholder="Senha" type="password" maxlength="8" id="password" name="password" required>
+            <input placeholder="Senha" type="password" maxlength="25" id="password" name="password" required>
             <div id="icon" onclick="showHide()"></div>
             <input id="button" type="submit" value="Acessar" class="btn" />
         </form>
