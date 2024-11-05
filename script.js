@@ -208,7 +208,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data.success) {
                     const groupObservation = data.groupObservation || 'Sem observações';
-                    obsModalContent.innerHTML = `<p>Grupo: ${groupName}</p><p>Observação: ${groupObservation}</p>`;
+    
+                    obsModalContent.innerHTML = `<p>Grupo: ${groupName}</p>`;
+                        
+                    // Cria um campo <textarea> para exibir a observação com quebras de linha
+                    const observationTextarea = document.createElement('textarea');
+                    observationTextarea.value = groupObservation;
+                    observationTextarea.style.width = '100%';
+                    observationTextarea.style.height = '275px';
+                    observationTextarea.readOnly = true;
+                    observationTextarea.style.resize = 'none';
+                    obsModalContent.appendChild(observationTextarea);
                     
                     // Verificar se o usuário é admin
                      if (isAdmin) {
@@ -217,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         editButton.style.marginTop = "10px";
                         editButton.addEventListener('click', () => {
                             showEditGroupModal(groupName, groupObservation);
-                            obsModal.style.display = 'none'; // Fecha o modal de visualização
+                            obsModal.style.display = 'none';
                         });
 
                         const deleteButton = document.createElement('button');
@@ -225,9 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         deleteButton.style.marginTop = "10px";
                         deleteButton.style.backgroundColor = "red";
                         deleteButton.style.color = "white";
+                        deleteButton.style.marginLeft = "270px"; 
                         deleteButton.addEventListener('click', () => {
                             showDeleteGroupModal(groupName);
-                            obsModal.style.display = 'none'; // Fecha o modal de visualização
+                            obsModal.style.display = 'none';
                         });
     
                         obsModalContent.appendChild(editButton);
@@ -235,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     }
     
-                    obsModal.style.display = 'block'; // Exibe o modal de observações
+                    obsModal.style.display = 'block'; 
                 } else {
                     alert('Erro ao buscar detalhes do grupo: ' + data.error);
                 }

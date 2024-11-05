@@ -514,6 +514,8 @@ button {
     box-sizing: border-box;
 }
 
+
+
 .modal-content input,.modal-content textarea{
     color: white;
     padding: 10px;
@@ -560,6 +562,14 @@ button {
   
 }
 
+#ObsModalBox{
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 520px;
+    top: -100px;
+}
+
 #GroupObsModal .modal {
     position: fixed;
     left: 0;
@@ -570,7 +580,7 @@ button {
 #EditGroupObsModal textarea {
     margin: 15px 0;
     width: 450px;
-    height: 100px
+    height: 100px;
   
 }
 
@@ -584,7 +594,7 @@ button {
 #VpnObsModal textarea {
     margin: 15px 0;
     width: 450px;
-    height: 100px
+    height: 100px;
   
 }
 
