@@ -172,7 +172,7 @@ $groups = getGroups($enterprise);
             <h2>ATRIBUIR CHAVE VPN PARA:</h2>
             <form id="linkForm">
                 <p>Nome do Usuário do AD:</p>
-                <input type="text" id="userName" style="padding: 10px;" data-ls-module="charCounter" maxlength="16" placeholder="Máx. 16 caracteres" name="userName" required>
+                <input type="text" id="userName" style="padding: 10px;" data-ls-module="charCounter" maxlength="30" placeholder="Máx. 30 caracteres" name="userName" required>
                 <input type="hidden" id="vpnIdToLink" name="vpnId">
                 <button type="submit">Vincular</button>
             </form>
