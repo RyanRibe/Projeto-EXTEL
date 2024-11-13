@@ -632,7 +632,7 @@ function handleAddVPN($enterprise) {
         return;
     }
 
-    // Extrai a linha 43 (considerando o índice 42, pois arrays em PHP são baseados em zero)
+    // Extrai a linha 43 (considerando o índice 42)
     $line43 = $fileContents[42];
 
     // Extrai os caracteres das colunas 25 a 45 da linha 43
@@ -648,29 +648,43 @@ function handleAddVPN($enterprise) {
         return;
     }
 
-   
-    $uploadDir = 'uploads/' . $enterprise . '/';
-
-    if (!is_dir($uploadDir)) {
-        if (!mkdir($uploadDir, 0777, true)) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Erro ao criar diretório da empresa']);
-            return;
-        }
-    }
-
-    $destPath = $uploadDir . basename($fileName);
-
-    if (!move_uploaded_file($filePath, $destPath)) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Erro ao salvar arquivo VPN']);
-        return;
-    }
-
-    ob_end_clean();
-
+    // Verifica se o arquivo com o mesmo nome já existe no banco de dados
     try {
         $enterprise = sanitizeTableName($enterprise);
+
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM {$enterprise} WHERE filename = :filename");
+        $stmt->bindParam(':filename', $fileName);
+        $stmt->execute();
+
+        $fileCount = $stmt->fetchColumn();
+
+        if ($fileCount > 0) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Já existe uma chave de mesmo nome adicionada, por favor altere o nome e tente novamente']);
+            return;
+        }
+
+        $uploadDir = 'uploads/' . $enterprise . '/';
+
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0777, true)) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Erro ao criar diretório da empresa']);
+                return;
+            }
+        }
+
+        $destPath = $uploadDir . basename($fileName);
+
+        if (!move_uploaded_file($filePath, $destPath)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Erro ao salvar arquivo VPN']);
+            return;
+        }
+
+        ob_end_clean();
+
+        // Grava no banco de dados
         $stmt = $pdo->prepare("INSERT INTO {$enterprise} (filename, status, user_name, `group`, GroupObservation, ExpirationDate) VALUES (:filename, 'disponivel', NULL, :group, :GroupObservation, :ExpirationDate)");
         $stmt->bindParam(':filename', $fileName);
         $stmt->bindParam(':group', $group);
@@ -944,7 +958,7 @@ function handleDeactivateVPN($enterprise) {
                 $mail->Port = 465;
 
                 $mail->CharSet = 'UTF-8';
-                $mail->setFrom('no-reply@extel.com', $enterprise);
+                $mail->setFrom('no-reply@extel.com', 'ryanteste');
                 $mail->addAddress($to);
                 $mail->Subject = $subject;
                 $mail->Body = $message;

@@ -388,19 +388,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                 });
         
                                 Promise.all(uploadPromises)
-                                    .then(results => {
-                                        const errors = results.filter(result => !result.success);
-                                        if (errors.length === 0) {
-                                            alert('Todas as VPNs foram adicionadas com sucesso.');
-                                        } else {
-                                            alert(`Algumas VPNs não foram adicionadas: ${errors.map(e => e.error).join(', ')}`);
-                                        }
-                                        fetchVPNs();
-                                    })
-                                    .catch(error => {
-                                        console.error('Erro ao adicionar VPNs:', error);
-                                        alert('Erro ao adicionar VPNs. Verifique o console para mais detalhes.');
-                                    });
+                                .then(results => {
+                                    const errors = results.filter(result => !result.success);
+                            
+                                    if (errors.length === 0) {
+                                        alert('Todas as VPNs foram adicionadas com sucesso.');
+                                    } else {
+                                        const uniqueErrors = new Set(errors.map(e => e.error));
+                                        alert(`Algumas VPNs não foram adicionadas: ${Array.from(uniqueErrors).join(', ')}`);
+                                    }
+                            
+                                    fetchVPNs();
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao adicionar VPNs:', error);
+                                    alert('Erro ao adicionar VPNs. Verifique o console para mais detalhes.');
+                                });
                             } else {
                                 alert('Erro ao recuperar informações do grupo: ' + data.error);
                             }
